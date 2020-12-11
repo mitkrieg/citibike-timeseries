@@ -15,12 +15,19 @@ def search_station_id(query):
     live = load(open('live.pickle','rb'))
     return live.loc[live.station_name.str.contains(query)][['station_name','station_id']]
 
+def search_station_id(query):
+    """
+    Returns station name given a particular id as query
+    """
+    live = load(open('live.pickle','rb'))
+    return live.loc[live.station_id == int(query)][['station_id','station_name']]
+
 def get_lon_lat(id):
     """
     Returns Longitude and Latitude coordinates as a tuple given a station id
     """
     live = load(open('live.pickle','rb'))
-    return (live.loc[live.station_id == id].lat, live.loc[live.station_id == id].lat)
+    return (live.loc[live.station_id == id].lat.values, live.loc[live.station_id == id].lon.values)
 
 class Station(object):
     

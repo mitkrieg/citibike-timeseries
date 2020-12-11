@@ -95,7 +95,8 @@ def trip_initialize():
     trips.starttime = pd.to_datetime(trips.starttime, format='%Y-%m-%d %H:%M:%S.%f')
     trips.stoptime = pd.to_datetime(trips.starttime, format='%Y-%m-%d %H:%M:%S.%f')
 
-    trips['day_of_week'] = trips.starttime.map(lambda x:x.weekday())
+    trips['day_of_week'] = trips.starttime.dt.weekday
+    trips['weekday'] = np.where(trips.day_of_week<5,True,False)
 
     pickle_out = open('trips.pickle','wb')
     pickle.dump(trips, pickle_out)
