@@ -94,7 +94,8 @@ def trip_initialize():
     #change times to datetime objects
     trips.starttime = pd.to_datetime(trips.starttime, format='%Y-%m-%d %H:%M:%S.%f')
     trips.stoptime = pd.to_datetime(trips.starttime, format='%Y-%m-%d %H:%M:%S.%f')
-
+    
+    #add day of week and weedday feature
     trips['day_of_week'] = trips.starttime.dt.weekday
     trips['weekday'] = np.where(trips.day_of_week<5,True,False)
 

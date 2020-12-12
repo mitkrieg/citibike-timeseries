@@ -27,7 +27,7 @@ def get_lon_lat(id):
     Returns Longitude and Latitude coordinates as a tuple given a station id
     """
     live = load(open('live.pickle','rb'))
-    return (live.loc[live.station_id == id].lat.values, live.loc[live.station_id == id].lon.values)
+    return (live.loc[live.station_id == id].lat.values[0], live.loc[live.station_id == id].lon.values[0])
 
 class Station(object):
     
