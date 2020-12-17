@@ -1,4 +1,4 @@
-# Taking off the Training Wheels: Re-balancing Citibike System Traffic
+# Taking off the Training Wheels: Re-balancing the Citibike System
 
 **Author**: Mitchell Krieger
 

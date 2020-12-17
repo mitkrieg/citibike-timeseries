@@ -12,29 +12,53 @@ def search_station_id(query):
     """
     Returns station ids given a particular string as query
     """
-    live = load(open('live.pickle','rb'))
+    live = load(open('./pickle/live.pickle','rb'))
     return live.loc[live.station_name.str.contains(query)][['station_name','station_id']]
 
-def search_station_id(query):
+def search_station_name(query):
     """
     Returns station name given a particular id as query
     """
-    live = load(open('live.pickle','rb'))
-    return live.loc[live.station_id == int(query)][['station_id','station_name']]
+    live = load(open('./pickle/live.pickle','rb'))
+    return live.loc[live.station_id == int(query)].station_name.values
 
 def get_lon_lat(id):
     """
     Returns Longitude and Latitude coordinates as a tuple given a station id
     """
-    live = load(open('live.pickle','rb'))
-    return (live.loc[live.station_id == id].lat.values[0], live.loc[live.station_id == id].lon.values[0])
+    live = load(open('./pickle/live.pickle','rb'))
+    
+    try:
+        return (float(live.loc[live.station_id == id].lat.values), float(live.loc[live.station_id == id].lon.values))
+    except:
+        return None
+
+def dickey_fuller(ts):
+        dftest = adfuller(ts)
+
+        # Extract and display test results
+        dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
+        for key,value in dftest[4].items():
+            dfoutput['Critical Value (%s)'%key] = value
+    
+        print ('Dickey-Fuller test: \n')
+        print(dfoutput)
+        
+        if dfoutput['p-value'] < .05:
+            print(f'\nStationary: p-value {dfoutput["p-value"]} < 0.05\n')
+            return True
+        else:
+           print(f'\nNot Stationary: p-value {dfoutput["p-value"]} > 0.05\n')
+           return False
+               
+        return dfoutput
 
 class Station(object):
     
-    live = load(open('live.pickle','rb'))
-    starts = load(open('starts.pickle','rb'))
-    ends = load(open('ends.pickle','rb'))
-    historical = load(open('historical.pickle','rb'))
+    live = load(open('./pickle/live.pickle','rb'))
+    starts = load(open('./pickle/starts.pickle','rb'))
+    ends = load(open('./pickle/ends.pickle','rb'))
+    historical = load(open('./pickle/historical.pickle','rb'))
 
     def __init__(self, station_id):
         self.id = station_id

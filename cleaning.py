@@ -182,19 +182,19 @@ def pickle_data():
     historical = historical_initalize()
 
 
-    pickle_out = open('live.pickle','wb')
+    pickle_out = open('./pickle/live.pickle','wb')
     pickle.dump(live, pickle_out)
     pickle_out.close()
 
-    pickle_out = open('starts.pickle','wb')
+    pickle_out = open('./pickle/starts.pickle','wb')
     pickle.dump(starts,pickle_out)
     pickle_out.close()
 
-    pickle_out = open('ends.pickle','wb')
+    pickle_out = open('./pickle/ends.pickle','wb')
     pickle.dump(ends,pickle_out)
     pickle_out.close()
 
-    pickle_out = open('historical.pickle','wb')
+    pickle_out = open('./pickle/historical.pickle','wb')
     pickle.dump(historical,pickle_out)
     pickle_out.close()
 
