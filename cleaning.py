@@ -52,7 +52,8 @@ def station_initalize():
         live_df.bike_angels_action == 'give',
         live_df.bike_angels_action == 'take',
     ]
-
+    
+    #negative value for take out positive value for take in
     choices = [0,0,live_df.bike_angels_points,live_df.bike_angels_points*(-1)]
 
     live_df.bike_angels_points = np.select(conditions,choices,live_df.bike_angels_points)
