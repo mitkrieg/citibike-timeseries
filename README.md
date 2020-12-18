@@ -1,8 +1,10 @@
-![citibike_logo](images/citibike_logo.png)
+
 
 # Taking off the Training Wheels: Re-balancing the Citibike System
 
 **Author**: Mitchell Krieger
+
+<img src="images/citibike_logo.png" width="400"/>
 
 ***
 
@@ -51,10 +53,9 @@ Here you can see pooling in some areas identified by consistent large red bubble
 
 Clear spikes occur during commuting hours on weekdays, while on weekends there is less of a high concentration of useage at one time. You can also see that of the weekdays, Tuesday, Wednesday and Thursday are have slightly higher useage than Monday and Friday. While the weekly and daily seasons are clear from the above, the yearly seasonality is not. The following plots look at the number of rides monthly vs daily in 2018.
 
-<p float="center">
-  <img src="images/trips_day.png" width="400" />
-  <img src="images/trips_monthly.png" width="400" /> 
-</p>
+![months](images/trips_monthly.png)
+
+![days](images/trips_day.png)
 
 While there is a clear difference when months are aggregated between the seasons, the daily plot shows us that the difference isn't quite as stark as one might initially think. This is perhaps due to the vast swings in temperature and weather in New York in recent years. This means if there is yearly seasonality, it may be a weaker factor in the models than daily and weekly.
 
@@ -94,8 +95,8 @@ The facebook prophet model also has the ability to easily handle the entire year
 Balanced stations should begin and end in the same place, and centered around zero. If the end points are non-zero the remainder of the day should balance out the ends. For example, a U shape like are often found in residential neighborhoods. This shape is balanced because it returns to where it started. Similary an inverted U often ofound in business areas, are also balanced because they return to where they started. The station is on right is on the upper west side and the station on the left is in the financial district:
 
 <p float="center">
-  <img src="images/columbus.png" />
-  <img src="images/fulton.png"  /> 
+  <img src="images/columbus.png" width=250 />
+  <img src="images/fulton.png" width=250 /> 
 </p>
 
 Unbalanced stations take on an upward or downward trend or are not centered around zero. This station in red hook is a bike pool:
@@ -122,10 +123,13 @@ Next steps are to:
 ## Repository Structure
 
 ```
-├──   <- 
-├──   <- 
-├──   <- 
-├──   <- 
-├──   <- 
-├──   <- 
-└──   <- 
+├── images              <- directory containing image files and plots used in project and animated hmtl maps 
+├── scratch_notebooks   <- old jupyternotebooks used in workflow
+├── 01_exploratory_data_analysis.ipynb <- Narrative Jupyter Notebook containing Visualizations and Other EDA
+├── 02_modeling.ipynb   <- Narrative Jupyter Notebook containing modeling processes
+├── README.md           <- README for overview of this project
+├── bikecron.py         <- py script used to regularly collect live feed data using cron locally
+├── cleaning.py         <- py script that cleans data and creates pickled files
+├── evaluation.py       <- py script containing functions for evaluation
+├── hidden_printing.py  <- py script that temporaryily suppressed printing function
+└── station.py          <- py scrip that contains functions for station analysis and the Station class
