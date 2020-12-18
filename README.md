@@ -21,7 +21,6 @@ Bike-sharing systems have a specific challenge when it comes to a user’s exper
 
 When a system is unbalanced, the drains and pools make finding/returning a bike impossible and disrupt the user experience. Therefore the balancing of the system is a critical task for CitiBike and other bike-share systems to manage on an hourly basis. Forcasting where and when bikes are going to be needed will be important order to effectively balance the. AI and Machine Learning can be used to predict where the demand for bikes will be and thus help identify where re-balancing methods need to focus their efforts. This project uses multivariate time-series anlysis to forcast bike demand and then un-supervised classification to identify bikes as pools, drains or balanced.
 
-
 ## Data
 
 Live feed station data and trip history is available through [CitiBike’s open system data](https://www.citibikenyc.com/system-data). In addition, historical timestamped station data through April 2019 was collected from [The Open Bus project](https://www.theopenbus.com/methodology.html). Stations and bikes have a unique id that allows the joining of information between datasets. The project will focus on data from 2018, as the 2019 data is somewhat incomplete. Live data was collected over a two and a half week period in November/December 2020. A `Station` class was created for quick access to features and analysis of various station information. 
@@ -38,26 +37,32 @@ To help solve the citibike system rebalancing issue, this project uses various m
 
 ## Exploratory Data Analysis
 
-### Visualizing causes of seasonality
+### Visualizing Pools & Drains
 
 Because seasonality will be such a critical part of this project, visualizing how bike availability changes hourly, daily, weekly and monthly helps us understand the what seasonality will need to be captured by the modeling process. This animation demonstates a typical week day pattern (the a full interactive animation can be found by downloading `percent_full_map.hmtl` from the `images/` directory):
 
 ![animated_map](images/map.gif)
 
-Here you can see pooling in some areas identified by consistent large red bubbles (ex. Red Hook, Brooklyn) and draining from other areas identified by consistent small blue dots (ex. Spanish Harlem, Manhattan). In addition, the graphic demonstrates a typical daily seasonality: there is a major shift in the system around commuting hours from bike stations kes in residential districts to/from stations in business districts. The this is further reflected in the following heatmap of total number of trips during a given hour on a given day and the line plot comparing the average number of trips on weekends to weekdays:
+Here you can see pooling in some areas identified by consistent large red bubbles (ex. Red Hook, Brooklyn) and draining from other areas identified by consistent small blue dots (ex. Spanish Harlem, Manhattan). In addition, the graphic demonstrates a typical daily seasonality: there is a major shift in the system around commuting hours from bike stations in residential districts to/from stations in business districts. 
+
+### Vizualizing Seasonality
+
+The trend in the animated map above points to the system's seasonality. The following heatmap of total number of trips during a given hour on a given day and the line plot comparing the average number of trips on weekends to weekdays, highlight the the key properties of the system's seasonality:
 
 <p float="center">
   <img src="images/week_heatmap.png" width="400" />
   <img src="images/weekday_v_weekend.png" width="500" /> 
 </p>
 
-Clear spikes occur during commuting hours on weekdays, while on weekends there is less of a high concentration of useage at one time. You can also see that of the weekdays, Tuesday, Wednesday and Thursday are have slightly higher useage than Monday and Friday. While the weekly and daily seasons are clear from the above, the yearly seasonality is not. The following plots look at the number of rides monthly vs daily in 2018.
+Clear spikes occur during commuting hours on weekdays, while on weekends there is less of a high concentration of useage at one time. You can also see that of the weekdays, Tuesday, Wednesday and Thursday are have slightly higher useage than Monday and Friday. These are clear weekly and daily seasons. However, any yearly seasonality is not apparent in the above. The following plots look at the number of rides monthly vs daily in 2018.
 
 ![months](images/trips_monthly.png)
 
 ![days](images/trips_day.png)
 
 While there is a clear difference when months are aggregated between the seasons, the daily plot shows us that the difference isn't quite as stark as one might initially think. This is perhaps due to the vast swings in temperature and weather in New York in recent years. This means if there is yearly seasonality, it may be a weaker factor in the models than daily and weekly.
+
+### Visualizing Rider Behavior
 
 Additionally, riders have a time limit of 30 minutes on a single ride pass, and 45 minutes on a membership. This means that pools and drains can be created if stations are too far apart. However, the vast majority of riders don't even get close the the ride time limit:
 
@@ -109,7 +114,7 @@ Using clustering we can classify like stations and then identify the cluster's q
 
 Facebook Prophet clearly has the best metrics on both the train and test set as well as most closely demonstrating the weekly and daily seasonality present in the citibike system. In addition because of its ability to easily handle missing data, it performed almost as well when cross validated throughout the year with a horizon of 22-23 days. This possibly indicates that adding yearly seasonality may only marginally increase the performance of the model. Now that we can use the model to somewhat accurately predict the number of bikes at a given station, we can extract the daily seasonality of the model to classify stations as pools, drains or balanced via clustering.
 
-Citibike can use these models to select stations to take bikes from due to an abundance of bikes and redistribute them to stations in need of more bikes. Citibike should also think about how to use seasonality to its advantage when rebalancing the system. Bikes tend to freeze in place overnight (as seen in EDA), which may be a good time for redistribution and because large spike during rush hour is consitently seasonal, it may be advantageous to attempt to redistribute bikes during the after the morning commute during business hours to business areas in anticipation of the evening commute rush.
+Citibike can use these models to select stations to take bikes from due to an abundance of bikes and redistribute them to stations in need of more bikes. Citibike should also think about how to use seasonality to its advantage when rebalancing the system. Bikes tend to freeze in place overnight (as seen in EDA), which may be a good time for redistribution and because large spike during rush hour is consitently seasonal, it may be advantageous to attempt to redistribute bikes during the after the morning commute during business hours to business areas in anticipation of the evening commute rush. Citibike should also consider establishing new stations in areas with many drains/pools.
 
 ## Next Steps
 
@@ -117,7 +122,7 @@ Next steps are to:
 
 - Further tune models (and maybe try new ones)
 - Cluster stations into pools, drains and balanced
-- Incorporate Exgoneous Variables such as holidays, weather and elevation
+- Incorporate Exgoneous Variables such as holidays, weather, electric bikes and elevation
 - Make interactive dashboard via dash, bokeh or tableau
  
 ## Repository Structure
@@ -129,6 +134,7 @@ Next steps are to:
 ├── 02_modeling.ipynb   <- Narrative Jupyter Notebook containing modeling processes
 ├── README.md           <- README for overview of this project
 ├── bikecron.py         <- py script used to regularly collect live feed data using cron locally
+├── presentation.pdf    <- a PDF version of the power point presentation
 ├── cleaning.py         <- py script that cleans data and creates pickled files
 ├── evaluation.py       <- py script containing functions for evaluation
 ├── hidden_printing.py  <- py script that temporaryily suppressed printing function
