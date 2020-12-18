@@ -121,12 +121,12 @@ def historical_initalize():
                 './station_data/bikeshare_nyc_raw_mar2018.csv',
                 './station_data/bikeshare_nyc_raw_apr2018.csv',
                 './station_data/bikeshare_nyc_raw_may2018.csv',
-                './station_data/bikeshare_nyc_raw_June_2018.csv',
-                './station_data/bikeshare_nyc_raw_july2018.csv',
-                './station_data/bikeshare_nyc_raw_Aug2018.csv',
-                './station_data/bikeshare_nyc_raw_Sept2018.csv',
+                './station_data/bikeshare_nyc_raw_jun2018.csv',
+                './station_data/bikeshare_nyc_raw_jul2018.csv',
+                './station_data/bikeshare_nyc_raw_aug2018.csv',
+                './station_data/bikeshare_nyc_raw_sep2018.csv',
                 './station_data/bikeshare_nyc_raw_oct2018.csv',
-                './station_data/bikeshare_nyc_raw_Nov2018.csv',
+                './station_data/bikeshare_nyc_raw_nov2018.csv',
                 './station_data/bikeshare_nyc_raw_dec2018.csv']
 
     station_dfs = [pd.read_csv(path,delimiter='\t', dtype= {'minute':str,'hour':str,'date':str}) for path in filepaths ]
