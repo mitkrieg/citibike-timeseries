@@ -108,11 +108,11 @@ Unbalanced stations take on an upward or downward trend or are not centered arou
 
 ![coffey](images/coffey.png)
 
-Using KMeans clustering we can classify like stations and then identify the cluster's quality. Despite an elbow at 7 clusters on plots of the Calinski Harabasz and Silhouette scores, a K of 5 was chosen because of the ability to decipher what each cluster represented: 
+Using KMeans clustering we can classify like stations and then identify the cluster's quality. Despite an elbow at 7 clusters on plots of the Calinski Harabasz and Silhouette scores, a K of 5 was chosen because of the ability to decipher what each cluster represented:
 
 ![clusters](images/poolsdrains_clusters.png)
 
-Areas with pools and drains are evident from the above clustering. Bikes pool in mostly Brooklyn perhaps because less people are using them for commuting due to its distance from Manhattan and east river making communiting harder if you don't have access to a bridge. Bikes drain from Upper East Side/East Harlem and the outer edges of the system such as Long Island City and deeper into Brooklyn. Midtown also has a decent amount of drains, although this may be because of the lack of a "slight drain" category (increasing to 6 clusters did not reveal such a trend).
+Areas with pools and drains are evident from the above clustering. Bikes pool in mostly Brooklyn perhaps because less people are using them for commuting due to its distance from Manhattan and east river making communiting harder if you don't have access to a bridge. Bikes drain from Upper East Side/East Harlem and the outer edges of the system such as Long Island City and deeper into Brooklyn. Midtown also has a decent amount of drains, although this may be because of the lack of a "slight drain" category (increasing to 6 clusters did not reveal such a trend). These clusters also reflect the pools and drains identified visually in the animated map above.
 
 ## Conclusions
 
