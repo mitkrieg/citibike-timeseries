@@ -23,7 +23,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
 colors = {
     'background': '#111111',
     'heading': '#7FDBFF',
-    'text': '#F5F6F7'
+    'text': \12
 }
 
 #get mapbox API key for geoplotting

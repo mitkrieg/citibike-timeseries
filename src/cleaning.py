@@ -69,18 +69,18 @@ def trip_initialize():
     *** Currently only 2018 ***
     """
     #read trips
-    filepaths = ['./trip_data/201801-citibike-tripdata.csv',
-                './trip_data/201802-citibike-tripdata.csv',
-                './trip_data/201803-citibike-tripdata.csv',
-                './trip_data/201804-citibike-tripdata.csv',
-                './trip_data/201805-citibike-tripdata.csv',
-                './trip_data/201806-citibike-tripdata.csv',
-                './trip_data/201807-citibike-tripdata.csv',
-                './trip_data/201808-citibike-tripdata.csv',
-                './trip_data/201809-citibike-tripdata.csv',
-                './trip_data/201810-citibike-tripdata.csv',
-                './trip_data/201811-citibike-tripdata.csv',
-                './trip_data/201812-citibike-tripdata.csv',]
+    filepaths = ['data/trip_data/201801-citibike-tripdata.csv',
+                'data/trip_data/201802-citibike-tripdata.csv',
+                'data/trip_data/201803-citibike-tripdata.csv',
+                'data/trip_data/201804-citibike-tripdata.csv',
+                'data/trip_data/201805-citibike-tripdata.csv',
+                'data/trip_data/201806-citibike-tripdata.csv',
+                'data/trip_data/201807-citibike-tripdata.csv',
+                'data/trip_data/201808-citibike-tripdata.csv',
+                'data/trip_data/201809-citibike-tripdata.csv',
+                'data/trip_data/201810-citibike-tripdata.csv',
+                'data/trip_data/201811-citibike-tripdata.csv',
+                'data/trip_data/201812-citibike-tripdata.csv',]
 
     trip_dfs = [pd.read_csv(path) for path in filepaths]
 
@@ -100,7 +100,7 @@ def trip_initialize():
     trips['day_of_week'] = trips.starttime.dt.weekday
     trips['weekday'] = np.where(trips.day_of_week<5,True,False)
 
-    pickle_out = open('./pickle/trips.pickle','wb')
+    pickle_out = open('data/pickle/trips.pickle','wb')
     pickle.dump(trips, pickle_out)
     pickle_out.close()
 
@@ -116,18 +116,18 @@ def historical_initalize():
     *** Currently only 2018
     """
     # read historical station data
-    filepaths = ['./station_data/bikeshare_nyc_raw_jan2018.csv',
-                './station_data/bikeshare_nyc_raw_feb2018.csv',
-                './station_data/bikeshare_nyc_raw_mar2018.csv',
-                './station_data/bikeshare_nyc_raw_apr2018.csv',
-                './station_data/bikeshare_nyc_raw_may2018.csv',
-                './station_data/bikeshare_nyc_raw_jun2018.csv',
-                './station_data/bikeshare_nyc_raw_jul2018.csv',
-                './station_data/bikeshare_nyc_raw_aug2018.csv',
-                './station_data/bikeshare_nyc_raw_sep2018.csv',
-                './station_data/bikeshare_nyc_raw_oct2018.csv',
-                './station_data/bikeshare_nyc_raw_nov2018.csv',
-                './station_data/bikeshare_nyc_raw_dec2018.csv']
+    filepaths = ['data/station_data/bikeshare_nyc_raw_jan2018.csv',
+                'data/station_data/bikeshare_nyc_raw_feb2018.csv',
+                'data/station_data/bikeshare_nyc_raw_mar2018.csv',
+                'data/station_data/bikeshare_nyc_raw_apr2018.csv',
+                'data/station_data/bikeshare_nyc_raw_may2018.csv',
+                'data/station_data/bikeshare_nyc_raw_jun2018.csv',
+                'data/station_data/bikeshare_nyc_raw_jul2018.csv',
+                'data/station_data/bikeshare_nyc_raw_aug2018.csv',
+                'data/station_data/bikeshare_nyc_raw_sep2018.csv',
+                'data/station_data/bikeshare_nyc_raw_oct2018.csv',
+                'data/station_data/bikeshare_nyc_raw_nov2018.csv',
+                'data/station_data/bikeshare_nyc_raw_dec2018.csv']
 
     station_dfs = [pd.read_csv(path,delimiter='\t', dtype= {'minute':str,'hour':str,'date':str}) for path in filepaths ]
 
@@ -183,19 +183,19 @@ def pickle_data():
     historical = historical_initalize()
 
 
-    pickle_out = open('./pickle/live.pickle','wb')
+    pickle_out = open('data/pickle/live.pickle','wb')
     pickle.dump(live, pickle_out)
     pickle_out.close()
 
-    pickle_out = open('./pickle/starts.pickle','wb')
+    pickle_out = open('data/pickle/starts.pickle','wb')
     pickle.dump(starts,pickle_out)
     pickle_out.close()
 
-    pickle_out = open('./pickle/ends.pickle','wb')
+    pickle_out = open('data/pickle/ends.pickle','wb')
     pickle.dump(ends,pickle_out)
     pickle_out.close()
 
-    pickle_out = open('./pickle/historical.pickle','wb')
+    pickle_out = open('data/pickle/historical.pickle','wb')
     pickle.dump(historical,pickle_out)
     pickle_out.close()
 

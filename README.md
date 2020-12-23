@@ -97,7 +97,7 @@ The Facebook prophet model also has the ability to easily handle the entire year
 
 ### Clustering
 
-Balanced stations should begin and end in the same place, and centered around zero. If the endpoints are non-zero the remainder of the day should balance out the ends. For example, a U like shape is often found in residential neighborhoods. This shape is balanced because it returns to where it started. Similarly, an inverted U often found in business areas, are also balanced because they return to where they started. The station is on right is on the upper west side and the station on the left is in the financial district:
+Balanced stations should begin and end in the same place, and centered around zero. If the endpoints are non-zero the remainder of the day should balance out the ends. For example, a U-like shape is often found in residential neighborhoods. This shape is balanced because it returns to where it started and is centered around zero. Similarly, an inverted U often found in business areas, are also balanced. The station below on right is on the upper west side (a residential area) and is balanced due to the U shape centered around zero. The station on the left is in the financial district and while it has an inverted U shape, it is not centered around zero. This may indicate a possible tendency to pool:
 
 <p float="center">
   <img src="images/columbus.png" width=250 />
@@ -108,34 +108,45 @@ Unbalanced stations take on an upward or downward trend or are not centered arou
 
 ![coffey](images/coffey.png)
 
-Using clustering we can classify like stations and then identify the cluster's quality.
+Using KMeans clustering we can classify like stations and then identify the cluster's quality. Despite an elbow at 7 clusters on plots of the Calinski Harabasz and Silhouette scores, a K of 5 was chosen because of the ability to decipher what each cluster represented: 
+
+![clusters](images/poolsdrains_clusters.png)
+
+Areas with pools and drains are evident from the above clustering. Bikes pool in mostly Brooklyn perhaps because less people are using them for commuting due to its distance from Manhattan and east river making communiting harder if you don't have access to a bridge. Bikes drain from Upper East Side/East Harlem and the outer edges of the system such as Long Island City and deeper into Brooklyn. Midtown also has a decent amount of drains, although this may be because of the lack of a "slight drain" category (increasing to 6 clusters did not reveal such a trend).
 
 ## Conclusions
 
-Facebook Prophet clearly has the best metrics on both the train and test set as well as most closely demonstrating the weekly and daily seasonality present in the citibike system. In addition because of its ability to easily handle missing data, it performed almost as well when cross validated throughout the year with a horizon of 22-23 days. This possibly indicates that adding yearly seasonality may only marginally increase the performance of the model. Now that we can use the model to somewhat accurately predict the number of bikes at a given station, we can extract the daily seasonality of the model to classify stations as pools, drains or balanced via clustering.
+Facebook Prophet clearly has the best metrics on both the train and test set as well as most closely demonstrating the weekly and daily seasonality present in the citibike system. In addition because of its ability to easily handle missing data, it performed almost as well when cross validated throughout the year with a horizon of 22-23 days. This possibly indicates that adding yearly seasonality may only marginally increase the performance of the model. With an RMSE Score of 6.3 and an MAE of 5.15, the model is off about 5-6 bikes on average. Considering that stations usually have a bike capacity of between 20-50, a 5-6 bike error is actually quite large (10%-20%). However, the purpose of the this project is to use the trends found in predicting available bikes to cluster bikes into pools, drains, or balanced. So while this large error is not ideal, the model does capture daily and weekly seasonality well, which is perhaps more important clustering.
 
-Citibike can use these models to select stations to take bikes from due to an abundance of bikes and redistribute them to stations in need of more bikes. Citibike should also think about how to use seasonality to its advantage when rebalancing the system. Bikes tend to freeze in place overnight (as seen in EDA), which may be a good time for redistribution, and because there is a large spike during rush hour every daily season, it may be advantageous to attempt to redistribute bikes during the after the morning commute during business hours to business areas in anticipation of the evening commute rush. Citibike should also consider establishing new stations in areas with many drains/pools.
+Now that we can use the model to somewhat accurately predict the number of bikes at a given station, we can extract the daily seasonality of the model to classify stations as pools, drains or balanced via clustering. The clustering process clearly shows areas of poolage vs drainage and citibike can use these models/clusters to select stations to take bikes from due to an abundance of bikes and redistribute them to stations in need of more bikes. Citibike should also think about how to use seasonality to its advantage when rebalancing the system. Bikes tend to freeze in place overnight (as seen in EDA), which may be a good time for redistribution. Plus, because there is a large spike during rush hour every daily season, it may be advantageous to attempt to redistribute bikes during the after the morning commute during business hours to business areas in anticipation of the evening commute rush. In addition it may be wise to consider establishing new stations in areas with many drains/pools.
 
 ## Next Steps
 
 Next steps are to:
 
-- Further tune models (and maybe try new ones)
-- Cluster stations into pools, drains and balanced
 - Incorporate Exgoneous Variables such as holidays, weather, electric bikes and elevation
-- Make interactive dashboard via dash, bokeh or tableau
+- Collect data additional data and run analysis on 2020/2021 as Citibike has since 2018 expanded greatly into the Bronx, Washington Heights & Uppser Harlem, and deeper into Queens and brooklyn.
+- Analyze the impact of COVID-19 on changes rider behavior and station trends/clustering.
+- Refine clustering process to include "slight drains"
  
 ## Repository Structure
 
 ```
+├── assets              <- directory containing assets for dashboard
 ├── images              <- directory containing image files and plots used in project and animated hmtl maps 
-├── scratch_notebooks   <- old jupyternotebooks used in workflow
+├── notebooks           <- old jupyternotebooks used in workflow
+├── src                 <- directory containing py files used in notebooks
+│   ├── bikecron.py     <- py script used to regularly collect live feed data using cron locally
+│   ├── cleaning.py     <- py script that cleans data and creates pickled files
+│   ├── evaluation.py   <- py script containing functions for evaluation
+│   ├── hidden_printing.py<- py script that temporaryily suppressed printing function
+│   └── station.py      <- py scrip that contains functions for station 
 ├── 01_exploratory_data_analysis.ipynb <- Narrative Jupyter Notebook containing Visualizations and Other EDA
-├── 02_modeling.ipynb   <- Narrative Jupyter Notebook containing modeling processes
+├── 02_modeling.ipynb   <- Narrative Jupyter Notebook containing modeling processes and analysis
+├── 03_clustering.ipynb <- Narrative Jupyter Notebook containing cluster processes and analysis
+├── app.py              <- Py script defining app variable for Dashboard made using plotly dash/flask
+├── callbacks.py        <- Py script generating interactivity for Dashboard
+├── index.py            <- Py script manages pages of Dashboard
+├── layouts.py          <- Py script creating html layouts of Dashboard
 ├── README.md           <- README for overview of this project
-├── bikecron.py         <- py script used to regularly collect live feed data using cron locally
-├── presentation.pdf    <- a PDF version of the power point presentation
-├── cleaning.py         <- py script that cleans data and creates pickled files
-├── evaluation.py       <- py script containing functions for evaluation
-├── hidden_printing.py  <- py script that temporaryily suppressed printing function
-└── station.py          <- py scrip that contains functions for station analysis and the Station class
+└── presentation.pdf    <- a PDF version of the power point presentation

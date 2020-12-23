@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from pickle import load, dump
-from cleaning import *
+from src.cleaning import *
 
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -12,21 +12,21 @@ def search_station_id(query):
     """
     Returns station ids given a particular string as query
     """
-    live = load(open('./pickle/live.pickle','rb'))
+    live = load(open('data/pickle/live.pickle','rb'))
     return live.loc[live.station_name.str.contains(query)][['station_name','station_id']]
 
 def search_station_name(query):
     """
     Returns station name given a particular id as query
     """
-    live = load(open('./pickle/live.pickle','rb'))
+    live = load(open('data/pickle/live.pickle','rb'))
     return live.loc[live.station_id == int(query)].station_name.values
 
 def get_lon_lat(id):
     """
     Returns Longitude and Latitude coordinates as a tuple given a station id
     """
-    live = load(open('./pickle/live.pickle','rb'))
+    live = load(open('data/pickle/live.pickle','rb'))
     
     try:
         return (float(live.loc[live.station_id == id].lat.values), float(live.loc[live.station_id == id].lon.values))
@@ -55,10 +55,10 @@ def dickey_fuller(ts):
 
 class Station(object):
     
-    live = load(open('./pickle/live.pickle','rb'))
-    starts = load(open('./pickle/starts.pickle','rb'))
-    ends = load(open('./pickle/ends.pickle','rb'))
-    historical = load(open('./pickle/historical.pickle','rb'))
+    live = load(open('data/pickle/live.pickle','rb'))
+    starts = load(open('data/pickle/starts.pickle','rb'))
+    ends = load(open('data/pickle/ends.pickle','rb'))
+    historical = load(open('data/pickle/historical.pickle','rb'))
 
     def __init__(self, station_id):
         self.id = station_id
@@ -362,7 +362,7 @@ class Station(object):
         self.current_avail_docks = df.loc[df.station_id == self.id].num_docks_available
         self.current_disabled_docks = df.loc[df.station_id == self.id].num_docks_disabled
 
-        pickle_out = open('live.pickle','wb')
+        pickle_out = open('../data/pickle/live.pickle','wb')
         pickle.dump(df,pickle_out)
         pickle_out.close()
 
