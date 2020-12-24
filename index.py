@@ -3,21 +3,24 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from layouts import layout1, layout2
+from layouts import system_layout, station_layout, nav_bar, CONTENT_STYLE
 import callbacks
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    nav_bar(),
+    html.Div(id='page-content',style=CONTENT_STYLE)
 ])
 
 @app.callback(Output('page-content', 'children'),
               Input('url', 'pathname'))
 def display_page(pathname):
-    if pathname == '/apps/app1':
-         return layout1
-    elif pathname == '/apps/app2':
-         return layout2
+    if pathname == '/':
+        return system_layout
+    elif pathname == '/system':
+         return system_layout
+    elif pathname == '/station':
+         return station_layout
     else:
         return '404'
 

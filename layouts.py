@@ -1,12 +1,30 @@
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from app import app
+import plotly.express as px
+
+import pandas as pd
 
 #####################################
 # Styles & Colors
 #####################################
 
+NAVBAR_STYLE = {
+    "position": "fixed",
+    "top": 0,
+    "left": 0,
+    "bottom": 0,
+    "width": "16rem",
+    "padding": "2rem 1rem",
+    "background-color": "#f8f9fa",
+}
 
+CONTENT_STYLE = {
+    "margin-left": "18rem",
+    "margin-right": "2rem",
+    "padding": "2rem 1rem",
+}
 
 #####################################
 # Reusable Components
@@ -14,56 +32,52 @@ from app import app
 
 def nav_bar():
 
-    nav_bar = html.Div([
-        
-        html.Div([
-            html.Img(
-                src  = app.get_asset_url('citibike_logo.png'),
-                height = '40px',
-                style = {'padding-top':'5%',
-                        'padding-left':'5%'
-                }
-            )],
-            className = 'col-2',
+    navbar = html.Div(
+    [
+        html.Img(src=app.get_asset_url('citibike_logo.png'), 
+                    style={'width':'100%','align':'center'}),
+        html.H4("System Performance Dashboard", className="display-10",style={'textAlign':'center'}),
+        html.Hr(),
+        dbc.Nav(
+            [
+                dbc.NavLink("System", href="/system", active="exact"),
+                dbc.NavLink("Station", href="/station", active="exact"),
+            ],
+            pills=True,
+            vertical=True
         ),
+    ],
+    style=NAVBAR_STYLE,
+)
+    
+    return navbar
 
-        html.Div([
-            html.H1('System Performance Dashboard')],
-            className='col-10'),
-        
+#####################################
+# Page Layout
+#####################################
+
+### System
+system_layout = dbc.Container([
+    html.Div(
+        [
+            html.H2('System Stats'),
+            html.Div(
+                [
+                    html.Img(src=app.get_asset_url('cibike_logo.png')),
+                    html.Div([html.H4('test'),html.P('body')])
+                ]
+            )
         ],
-
-        className = 'row',
-        style = {'height':'4%'} 
-        )
-    return nav_bar
-
-
-layout1 = html.Div([
-    nav_bar(),
-    html.H3('App 1'),
-    dcc.Dropdown(
-        id='app-1-dropdown',
-        options=[
-            {'label': 'App 1 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    html.Div(id='app-1-display-value'),
-    dcc.Link('Go to App 2', href='/apps/app2')
+        id='page-content'
+    ), 
 ])
 
-layout2 = html.Div([
-    html.H3('App 2'),
-    dcc.Dropdown(
-        id='app-2-dropdown',
-        options=[
-            {'label': 'App 2 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    html.Div(id='app-2-display-value'),
-    dcc.Link('Go to App 1', href='/apps/app1')
+### Station
+station_layout = dbc.Container([
+    html.Div(
+        [
+            html.H2('Station Stats')
+        ],
+        id='page-content'
+    )
 ])
