@@ -1,8 +1,15 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
 from dash.dependencies import Input, Output
-import plotly.express as px
-import pandas as pd
 
-##CODE HERE##
+from app import app
+
+@app.callback(
+    Output('app-1-display-value', 'children'),
+    Input('app-1-dropdown', 'value'))
+def display_value(value):
+    return 'You have selected "{}"'.format(value)
+
+@app.callback(
+    Output('app-2-display-value', 'children'),
+    Input('app-2-dropdown', 'value'))
+def display_value(value):
+    return 'You have selected "{}"'.format(value)
