@@ -19,6 +19,6 @@ def render_tab_content(active_tab):
         if active_tab == "week-line":
             return dcc.Graph(figure=gcomponents['week_line'])
         elif active_tab == "week-heat":
-            return html.H4('Heat map goes here')
+            return dcc.Graph(figure=gcomponents['week_heat'])
     return "No tab selected"
 

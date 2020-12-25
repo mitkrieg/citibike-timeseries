@@ -13,6 +13,7 @@ from pickle import load
 #####################################
 
 starts = load(open('./data/pickle/starts.pickle','rb'))
+year_2018 = load(open('./data/pickle/historical.pickle','rb'))
 
 #####################################
 # Styles & Colors
@@ -77,13 +78,36 @@ ww.rename(columns={0:'weekdays',1:'weekends'}, inplace=True)
 week_line = go.Figure()
 week_line.add_trace(go.Scatter(y=ww.weekdays,mode='lines',fill='tozeroy',name='Weekdays'))
 week_line.add_trace(go.Scatter(y=ww.weekends,mode='lines',fill='tozeroy',name='Weekends'))
-week_line.update_layout(title='Average Number of Rides per Hour',
+week_line.update_layout(
                  xaxis_title='Hour',
-                 yaxis_title='Number of Rides')
+                 yaxis_title='Average Number of Rides',
+                 legend={
+                     'yanchor':'top',
+                     'y':.99,
+                     'xanchor':'left',
+                     'x':.01
+                 }
+                 )
 
+#### Weekly heatmap ####
 
-gcomponents = {'week_line':week_line}
-#### Weekly heatmap
+starts_by_weekday = starts.droplevel(level=-2)
+starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack().transpose()
+
+week_heat = px.imshow(starts_by_weekday,color_continuous_scale='hot')
+week_heat.update_layout(
+                 xaxis_title='Hour',
+                 xaxis={'tickmode':'linear',
+                        'tick0':0,
+                        'dtick':1},
+                 yaxis_title='Day',
+                 yaxis={'tickmode':'array',
+                        'tickvals':list(range(7)),
+                        'ticktext':['Mon','Tues','Wed','Thurs','Fri','Sat','Sun']},
+                 coloraxis_colorbar={'title':"Total Rides"},)
+
+gcomponents = {'week_line':week_line,
+                'week_heat':week_heat}
 
 #####################################
 # Page Layout
@@ -94,19 +118,27 @@ system_layout = dbc.Container([
     html.Div(
         [
             html.H2('System Stats'),
-            html.Div(
+            html.Hr(),
+            dbc.Col(
                 [
-                    dbc.Tabs(
+                    html.H4('Daily Ridership'),
+                    html.Div(
                         [
-                            dbc.Tab(label='Line',tab_id='week-line'),
-                            dbc.Tab(label='Heat',tab_id='week-heat')
-                        ],
-                        id="tabs",
-                        active_tab='week-line',
-                    ),
-                    html.Div(id="tab-content",className="p-4")
-                ]
+                        dbc.Tabs(
+                            [
+                                dbc.Tab(label='Line',tab_id='week-line'),
+                                dbc.Tab(label='Heat',tab_id='week-heat')
+                            ],
+                            id="tabs",
+                            active_tab='week-line',
+                            ),
+                        html.Div(id="tab-content",className="p-4")
+                        ]
+                    )
+                ],
+                width=8
             )
+            
             
             
         ],
