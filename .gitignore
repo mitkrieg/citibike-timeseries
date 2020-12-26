@@ -1,0 +1,7 @@
+Research
+*.pdf
+.DS_store
+*.pyc
+.env
+.darts
+.ipynb_checkpoints
