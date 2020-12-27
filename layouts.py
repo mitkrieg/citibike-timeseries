@@ -8,20 +8,15 @@ import plotly.graph_objects as go
 import boto3
 
 import pandas as pd
+import json
 from pickle import load
 
 #####################################
 # Data
 #####################################
 
-s3 = boto3.resource('s3')
-with open('trips.pickle','wb') as trip_data:
-    s3.Bucket('citibikes-system-data').download_fileobj('trips.pickle',trip_data)
-
-with open('trips.pickle','rb') as trip_data:
-    temp = load(trip_data)
-
-starts = temp.set_index(['start_station_id','starttime']).sort_values(['start_station_id','starttime'])
+starts = load(open('./data/pickle/starts.pickle','rb'))
+animation_data = load(open('./data/pickle/june17_slice.pickle','rb'))
 
 #####################################
 # Styles & Colors
@@ -114,8 +109,30 @@ week_heat.update_layout(
                         'ticktext':['Mon','Tues','Wed','Thurs','Fri','Sat','Sun']},
                  coloraxis_colorbar={'title':"Total Rides"},)
 
+#### Animated Map ###
+
+#get mapbox API key for plotting
+path = '/Users/mitchellkrieger/.secret/mapbox_api.json'
+
+with open(path) as f:
+    api = json.load(f)
+    
+api_key = api['api_token']
+
+px.set_mapbox_access_token(api_key)
+
+#plot 
+animap = px.scatter_mapbox(animation_data, lat="_lat", lon="_long",
+                        animation_frame='dt', animation_group='id',
+                        color="percent_full", size="avail_bikes",
+                        color_continuous_scale=px.colors.cyclical.IceFire, size_max=15,
+                        zoom=11,width=800,height=800)
+
+
 gcomponents = {'week_line':week_line,
-                'week_heat':week_heat}
+                'week_heat':week_heat,
+                'animap':animap}
+
 
 #####################################
 # Page Layout
@@ -158,7 +175,15 @@ system_layout = dbc.Container([
 station_layout = dbc.Container([
     html.Div(
         [
-            html.H2('Station Stats')
+            html.H2('Station Stats'),
+            html.Hr(),
+            dbc.Col(
+                [
+                    html.H4('Station Fill June 17, 2018 - June 30, 2018'),
+                    dcc.Graph(figure=animap)
+                ],
+                width=12
+            )
         ],
         id='page-content'
     )
