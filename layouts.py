@@ -5,6 +5,8 @@ from app import app
 import plotly.express as px
 import plotly.graph_objects as go
 
+import boto3
+
 import pandas as pd
 from pickle import load
 
@@ -12,8 +14,14 @@ from pickle import load
 # Data
 #####################################
 
-starts = load(open('./data/pickle/starts.pickle','rb'))
-year_2018 = load(open('./data/pickle/historical.pickle','rb'))
+s3 = boto3.resource('s3')
+with open('trips.pickle','wb') as trip_data:
+    s3.Bucket('citibikes-system-data').download_fileobj('trips.pickle',trip_data)
+
+with open('trips.pickle','rb') as trip_data:
+    temp = load(trip_data)
+
+starts = temp.set_index(['start_station_id','starttime']).sort_values(['start_station_id','starttime'])
 
 #####################################
 # Styles & Colors

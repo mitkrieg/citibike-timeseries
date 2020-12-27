@@ -1,0 +1,17 @@
+boto3==1.16.43
+botocore==1.19.43
+dash @ file:///home/conda/feedstock_root/build_artifacts/dash_1607700893762/work
+dash-bootstrap-components @ file:///home/conda/feedstock_root/build_artifacts/dash-bootstrap-components_1608474949898/work
+dash-core-components @ file:///home/conda/feedstock_root/build_artifacts/dash-core-components_1607591917425/work
+dash-html-components @ file:///home/conda/feedstock_root/build_artifacts/dash-html-components_1599715712112/work
+dash-renderer @ file:///home/conda/feedstock_root/build_artifacts/dash-renderer_1604054245287/work
+dash-table @ file:///home/conda/feedstock_root/build_artifacts/dash-table_1607421537867/work
+Flask==1.1.2
+Flask-Compress @ file:///home/conda/feedstock_root/build_artifacts/flask-compress_1604422164145/work
+gunicorn==20.0.4
+numpy==1.19.0
+pandas==1.1.3
+plotly==4.13.0
+requests @ file:///tmp/build/80754af9/requests_1592841827918/work
+scipy==1.5.0
+matplotlib==3.2.2

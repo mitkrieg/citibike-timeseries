@@ -141,6 +141,7 @@ Next steps are to:
 │   ├── evaluation.py   <- py script containing functions for evaluation
 │   ├── hidden_printing.py<- py script that temporaryily suppressed printing function
 │   └── station.py      <- py scrip that contains functions for station 
+├── .gitignore          <- git ignore file
 ├── 01_exploratory_data_analysis.ipynb <- Narrative Jupyter Notebook containing Visualizations and Other EDA
 ├── 02_modeling.ipynb   <- Narrative Jupyter Notebook containing modeling processes and analysis
 ├── 03_clustering.ipynb <- Narrative Jupyter Notebook containing cluster processes and analysis
@@ -149,4 +150,6 @@ Next steps are to:
 ├── index.py            <- Py script manages pages of Dashboard
 ├── layouts.py          <- Py script creating html layouts of Dashboard
 ├── README.md           <- README for overview of this project
+├── requirements.txt    <- requirements for replicating code
+├── Procfile            <- Procfile for deployment to Heroku
 └── presentation.pdf    <- a PDF version of the power point presentation
