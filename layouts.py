@@ -14,14 +14,14 @@ from pickle import load
 # Data
 #####################################
 
-s3 = boto3.resource('s3')
-with open('trips.pickle','wb') as trip_data:
-    s3.Bucket('citibikes-system-data').download_fileobj('trips.pickle',trip_data)
+# s3 = boto3.resource('s3')
+# with open('trips.pickle','wb') as trip_data:
+#     s3.Bucket('citibikes-system-data').download_fileobj('trips.pickle',trip_data)
 
-with open('trips.pickle','rb') as trip_data:
-    temp = load(trip_data)
+# with open('trips.pickle','rb') as trip_data:
+#     temp = load(trip_data)
 
-starts = temp.set_index(['start_station_id','starttime']).sort_values(['start_station_id','starttime'])
+# starts = temp.set_index(['start_station_id','starttime']).sort_values(['start_station_id','starttime'])
 
 #####################################
 # Styles & Colors
@@ -73,49 +73,49 @@ def nav_bar():
 # Graphical/data Components
 #####################################
 
-#### Weekday vs Weekend ####
+# #### Weekday vs Weekend ####
 
-#separate trips into weekdays and weekends
-weekdays = starts[starts.weekday==True].droplevel(level=-2)
-weekends = starts[starts.weekday==False].droplevel(level=-2)
+# #separate trips into weekdays and weekends
+# weekdays = starts[starts.weekday==True].droplevel(level=-2)
+# weekends = starts[starts.weekday==False].droplevel(level=-2)
 
-ww = pd.concat([weekdays.groupby(weekdays.index.hour).size()/52/5,weekends.groupby(weekends.index.hour).size()/52/2],
-              axis=1)
-ww.rename(columns={0:'weekdays',1:'weekends'}, inplace=True)
+# ww = pd.concat([weekdays.groupby(weekdays.index.hour).size()/52/5,weekends.groupby(weekends.index.hour).size()/52/2],
+#               axis=1)
+# ww.rename(columns={0:'weekdays',1:'weekends'}, inplace=True)
 
-week_line = go.Figure()
-week_line.add_trace(go.Scatter(y=ww.weekdays,mode='lines',fill='tozeroy',name='Weekdays'))
-week_line.add_trace(go.Scatter(y=ww.weekends,mode='lines',fill='tozeroy',name='Weekends'))
-week_line.update_layout(
-                 xaxis_title='Hour',
-                 yaxis_title='Average Number of Rides',
-                 legend={
-                     'yanchor':'top',
-                     'y':.99,
-                     'xanchor':'left',
-                     'x':.01
-                 }
-                 )
+# week_line = go.Figure()
+# week_line.add_trace(go.Scatter(y=ww.weekdays,mode='lines',fill='tozeroy',name='Weekdays'))
+# week_line.add_trace(go.Scatter(y=ww.weekends,mode='lines',fill='tozeroy',name='Weekends'))
+# week_line.update_layout(
+#                  xaxis_title='Hour',
+#                  yaxis_title='Average Number of Rides',
+#                  legend={
+#                      'yanchor':'top',
+#                      'y':.99,
+#                      'xanchor':'left',
+#                      'x':.01
+#                  }
+#                  )
 
-#### Weekly heatmap ####
+# #### Weekly heatmap ####
 
-starts_by_weekday = starts.droplevel(level=-2)
-starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack().transpose()
+# starts_by_weekday = starts.droplevel(level=-2)
+# starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack().transpose()
 
-week_heat = px.imshow(starts_by_weekday,color_continuous_scale='hot')
-week_heat.update_layout(
-                 xaxis_title='Hour',
-                 xaxis={'tickmode':'linear',
-                        'tick0':0,
-                        'dtick':1},
-                 yaxis_title='Day',
-                 yaxis={'tickmode':'array',
-                        'tickvals':list(range(7)),
-                        'ticktext':['Mon','Tues','Wed','Thurs','Fri','Sat','Sun']},
-                 coloraxis_colorbar={'title':"Total Rides"},)
+# week_heat = px.imshow(starts_by_weekday,color_continuous_scale='hot')
+# week_heat.update_layout(
+#                  xaxis_title='Hour',
+#                  xaxis={'tickmode':'linear',
+#                         'tick0':0,
+#                         'dtick':1},
+#                  yaxis_title='Day',
+#                  yaxis={'tickmode':'array',
+#                         'tickvals':list(range(7)),
+#                         'ticktext':['Mon','Tues','Wed','Thurs','Fri','Sat','Sun']},
+#                  coloraxis_colorbar={'title':"Total Rides"},)
 
-gcomponents = {'week_line':week_line,
-                'week_heat':week_heat}
+# gcomponents = {'week_line':week_line,
+#                 'week_heat':week_heat}
 
 #####################################
 # Page Layout
