@@ -3,6 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
+from app import server
 from layouts import system_layout, station_layout, nav_bar, CONTENT_STYLE
 import callbacks
 
