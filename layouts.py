@@ -140,7 +140,7 @@ clusters.reset_index(inplace=True)
 
 cluster_map = px.scatter_mapbox(clusters, lat="_lat", lon="_long",
                         hover_name='station_name',hover_data=['station_id','_lat','_long'],
-                        color='KMeans_5_named', zoom=10,width=600,height=600, 
+                        color='KMeans_5_named', zoom=10,width=500,height=500, 
                         labels={'KMeans_5_named':'Clusters'}, 
                         color_discrete_sequence=['navy','cornflowerblue','darkorange','forestgreen','firebrick'],
                         category_orders={'KMeans_5_named':['Pool',
@@ -211,6 +211,8 @@ system_layout = html.Div([
         ), 
     ]),
 ], id='page-content')
+
+
 ### Station
 station_layout = html.Div(
     [
@@ -229,7 +231,7 @@ station_layout = html.Div(
                                             "hovertext":'None',
                                             "lat":"None",
                                             "lon":"None",
-                                            "customdata":['None']}
+                                            "customdata":['72']}
                                         ]}
                                 )
                             ],
@@ -237,9 +239,10 @@ station_layout = html.Div(
                         ),
                         dbc.Col(
                             [
-                                html.H4('Selected Station Info'),
+                                html.H4('Selected Station'),
                                 html.Div(id='station-content')
-                            ]
+                            ],
+                            width=6
                         )
                     ]
                 )
@@ -248,24 +251,3 @@ station_layout = html.Div(
     ],
     id='page-content'
 )
-
-
-
-dbc.Container([
-    
-    html.Div(
-        [
-            html.H2('Station Stats'),
-            html.Hr(),
-            dbc.Col(
-                [
-                    html.H4('Station Map'),
-                    dcc.Graph(figure=cluster_map)
-                    
-                ],
-                width=6
-            )
-        ],
-        id='page-content'
-    )
-])
