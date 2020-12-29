@@ -187,7 +187,7 @@ def pickle_data():
     pickle.dump(live, pickle_out)
     pickle_out.close()
 
-    pickle_out = open('data/pickle/starts.pickle','wb')
+    pickle_out = open('data/starts.pickle','wb')
     pickle.dump(starts,pickle_out)
     pickle_out.close()
 

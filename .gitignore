@@ -6,4 +6,6 @@ Research
 .darts
 .ipynb_checkpoints
 testing.ipynb
-data
+data/station_data
+data/trip_data
+data/pickle

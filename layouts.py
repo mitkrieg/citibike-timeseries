@@ -34,10 +34,10 @@ NAVBAR_STYLE = {
 }
 
 CONTENT_STYLE = {
-    "top":5,
+    "top":0,
     "margin-left": "18rem",
     "margin-right": "2rem",
-    "padding": "2rem 1rem",
+    "padding": "1rem 0rem",
 }
 
 #####################################

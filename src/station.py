@@ -56,7 +56,7 @@ def dickey_fuller(ts):
 class Station(object):
     
     live = load(open('data/pickle/live.pickle','rb'))
-    starts = load(open('data/pickle/starts.pickle','rb'))
+    starts = load(open('data/starts.pickle','rb'))
     ends = load(open('data/pickle/ends.pickle','rb'))
     historical = load(open('data/pickle/historical.pickle','rb'))
 
