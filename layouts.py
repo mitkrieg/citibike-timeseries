@@ -140,13 +140,13 @@ clusters.reset_index(inplace=True)
 
 cluster_map = px.scatter_mapbox(clusters, lat="_lat", lon="_long",
                         hover_name='station_name',hover_data=['station_id','_lat','_long'],
-                        color='KMeans_5_named', zoom=10,width=500,height=500, 
+                        color='KMeans_5_named', zoom=11,width=400,height=600, 
                         labels={'KMeans_5_named':'Clusters'}, 
-                        color_discrete_sequence=['navy','cornflowerblue','darkorange','forestgreen','firebrick'],
+                        color_discrete_sequence=['navy','cornflowerblue','forestgreen','seagreen','firebrick'],
                         category_orders={'KMeans_5_named':['Pool',
                                                            'Slight Pool',
                                                            'Balanced - Residential',
-                                                           'Balanced - Business District',
+                                                           'Balanced - Business',
                                                            'Drain'
                                                           ]})
 
@@ -210,7 +210,7 @@ system_layout = html.Div([
             ],
         ), 
     ]),
-], id='page-content', style={'marginTop':10})
+], id='page-content')
 
 
 ### Station
@@ -227,7 +227,7 @@ station_layout = html.Div(
                                 html.H4('Station Map'),
                                 dcc.Graph(figure=cluster_map,
                                         id='station-map',
-                                        hoverData={'points':[{
+                                        clickData={'points':[{
                                             "hovertext":'None',
                                             "lat":"None",
                                             "lon":"None",
@@ -235,19 +235,24 @@ station_layout = html.Div(
                                         ]}
                                 )
                             ],
-                            width=6
+                            width=5
                         ),
                         dbc.Col(
                             [
                                 html.H4('Selected Station'),
-                                html.Div(id='station-content')
+                                dbc.Row(id='station-content'),
+                                html.Hr(),
+                                html.Div(id='daily-graph')
                             ],
-                            width=6
                         )
                     ]
+                ),
+
+                dbc.Row(
+                    [html.H4('Time Series')]
                 )
             ]
         )
     ],
-    id='page-content', style={'marginTop':0}
+    id='page-content'
 )

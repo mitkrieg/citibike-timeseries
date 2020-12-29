@@ -33,9 +33,9 @@ def render_tab_content(active_tab):
 
 @app.callback(
     Output("station-content","children"),
-    Input("station-map","hoverData")
+    Input("station-map","clickData")
 )
-def render_station_content(hover_data):
+def basic_content(hover_data):
     """
     This call back generates individual station information from cursor hover
     over the station map
@@ -59,7 +59,7 @@ def render_station_content(hover_data):
         avail_bikes = ''
     
     try:
-        avail_docks = live.loc[live.station_id == int(station_id)].num_docs_available.values[0]
+        avail_docks = live.loc[live.station_id == int(station_id)].num_docks_available.values[0]
     except:    
         avail_docks = ''
     
@@ -90,7 +90,7 @@ def render_station_content(hover_data):
         
         
     try:
-        updated = dt.fromtimestamp(live.loc[live.station_id == int(station_id)].last_reported.values[0]).strftime('%a, %b %d %I:%M %p')
+        updated = dt.fromtimestamp(live.loc[live.station_id == int(station_id)].last_reported.values[0]).strftime('%a, %b %d, %Y %I:%M %p')
     except:
         updated = 'December 2018'
 
@@ -104,19 +104,18 @@ def render_station_content(hover_data):
                 html.Br(),
                 'Coordinates: (', lat, ', ', lon,')',
                 html.Br(),
+                html.Br(),
                 'Status: ', status,
-                html.Br()
+                html.Br(),
+                'Last Reported: ', updated,
             ])
-        ],
+        ], width=7
     )
 
     bike_stats = dbc.Col(
         [
             html.H5('Bike Stats'),
             html.P([
-                'Last Reported: ', updated,
-                html.Br(),
-                html.Br(),
                 'Capacity: ', capacity,
                 html.Br(),
                 'Available Bikes: ', avail_bikes,
@@ -134,14 +133,32 @@ def render_station_content(hover_data):
                 html.Br(),
                 'Bike Angel Points: ', points
             ])
-        ],
+        ], width= 5
     )
 
-    daily  = dbc.Col(
+    return basic_stats, bike_stats
+
+@app.callback(
+    Output("daily-graph","children"),
+    Input("station-map","clickData")
+)
+def render_daily_graph(hover_data):
+    """
+    Generates Daily Seasonality graph based on hover
+    """
+    station_id = hover_data['points'][0]['customdata'][0]
+    daily = px.line(system_daily['2018-06-17']['daily_'+station_id],
+                    width=500, height=300
+    )
+
+    daily.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False,)
+    daily.update_yaxes(range=[-20,20])
+
+    daily = dbc.Col(
         [
             html.H5('Daily Seasonality'),
             dcc.Graph(figure=daily)
         ]
     )
 
-    return basic_stats, bike_stats, daily
+    return daily
