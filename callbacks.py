@@ -9,8 +9,11 @@ import json
 from datetime import datetime as dt
 
 from numpy import nan
+from pickle import load
+import plotly.express as px
 
 live = station_initalize()
+system_daily = load(open('./data/pickle/system_daily.pickle','rb'))
 
 @app.callback(
     Output("tab-content", "children"),
@@ -18,9 +21,8 @@ live = station_initalize()
 )
 def render_tab_content(active_tab):
     """
-    This callback takes the 'active_tab' property as input, as well as the
-    stored graphs, and renders the tab content depending on what the value of
-    'active_tab' is.
+    This callback takes the 'active_tab' property as input, and 
+    renders the associated graph with the tab name.
     """
     if active_tab is not None:
         if active_tab == "week-line":
@@ -34,12 +36,16 @@ def render_tab_content(active_tab):
     Input("station-map","hoverData")
 )
 def render_station_content(hover_data):
+    """
+    This call back generates individual station information from cursor hover
+    over the station map
+    """
     name = hover_data['points'][0]['hovertext']
     station_id = hover_data['points'][0]['customdata'][0]
     lat = hover_data['points'][0]['lat']
     lon = hover_data['points'][0]['lon']
     status = 'Active'
-    print(hover_data)
+    daily = px.line(system_daily['2018-06-17']['daily_'+station_id])
 
     try:
         capacity = live.loc[live.station_id == int(station_id)].capacity.values[0]
@@ -88,7 +94,7 @@ def render_station_content(hover_data):
     except:
         updated = 'December 2018'
 
-    basic_stats = html.Div(
+    basic_stats = dbc.Col(
         [
             html.H5('Basic Information'),
             html.P([
@@ -101,10 +107,10 @@ def render_station_content(hover_data):
                 'Status: ', status,
                 html.Br()
             ])
-        ]
+        ],
     )
 
-    bike_stats = html.Div(
+    bike_stats = dbc.Col(
         [
             html.H5('Bike Stats'),
             html.P([
@@ -128,9 +134,14 @@ def render_station_content(hover_data):
                 html.Br(),
                 'Bike Angel Points: ', points
             ])
+        ],
+    )
+
+    daily  = dbc.Col(
+        [
+            html.H5('Daily Seasonality'),
+            dcc.Graph(figure=daily)
         ]
     )
 
-    print('capacity: ', capacity)
-
-    return basic_stats, bike_stats
+    return basic_stats, bike_stats, daily

@@ -210,7 +210,7 @@ system_layout = html.Div([
             ],
         ), 
     ]),
-], id='page-content')
+], id='page-content', style={'marginTop':10})
 
 
 ### Station
@@ -249,5 +249,5 @@ station_layout = html.Div(
             ]
         )
     ],
-    id='page-content'
+    id='page-content', style={'marginTop':0}
 )
