@@ -17,6 +17,7 @@ from pickle import load
 
 starts = load(open('./data/pickle/starts.pickle','rb'))
 animation_data = load(open('./data/pickle/june17_slice.pickle','rb'))
+clusters = load(open('./data/pickle/clusters.pickle','rb'))
 
 #####################################
 # Styles & Colors
@@ -89,27 +90,29 @@ week_line.update_layout(
                      'y':.99,
                      'xanchor':'left',
                      'x':.01
-                 }
+                 },
+                 margin={'l':5,'r':2,'t':5,'b':5}
                  )
 
 #### Weekly heatmap ####
 
 starts_by_weekday = starts.droplevel(level=-2)
-starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack().transpose()
+starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack()
 
 week_heat = px.imshow(starts_by_weekday,color_continuous_scale='hot')
 week_heat.update_layout(
-                 xaxis_title='Hour',
-                 xaxis={'tickmode':'linear',
+                 yaxis_title='Hour',
+                 yaxis={'tickmode':'linear',
                         'tick0':0,
                         'dtick':1},
-                 yaxis_title='Day',
-                 yaxis={'tickmode':'array',
+                 xaxis_title='Day',
+                 xaxis={'tickmode':'array',
                         'tickvals':list(range(7)),
                         'ticktext':['Mon','Tues','Wed','Thurs','Fri','Sat','Sun']},
-                 coloraxis_colorbar={'title':"Total Rides"},)
+                 coloraxis_colorbar={'title':"Total Rides"},
+                 margin={'l':5,'r':2,'t':5,'b':5})
 
-#### Animated Map ###
+#### Animated Map ####
 
 #get mapbox API key for plotting
 path = '/Users/mitchellkrieger/.secret/mapbox_api.json'
@@ -126,12 +129,43 @@ animap = px.scatter_mapbox(animation_data, lat="_lat", lon="_long",
                         animation_frame='dt', animation_group='id',
                         color="percent_full", size="avail_bikes",
                         color_continuous_scale=px.colors.cyclical.IceFire, size_max=15,
-                        zoom=11,width=800,height=800)
+                        zoom=10,width=600,height=600)
 
+animap.update_layout(margin={'l':5,'r':2,'t':5,'b':5})
+
+
+#### Cluster Map ####
+
+clusters.reset_index(inplace=True)
+
+cluster_map = px.scatter_mapbox(clusters, lat="_lat", lon="_long",
+                        hover_name='station_name',hover_data=['station_id','_lat','_long'],
+                        color='KMeans_5_named', zoom=10,width=600,height=600, 
+                        labels={'KMeans_5_named':'Clusters'}, 
+                        color_discrete_sequence=['navy','cornflowerblue','darkorange','forestgreen','firebrick'],
+                        category_orders={'KMeans_5_named':['Pool',
+                                                           'Slight Pool',
+                                                           'Balanced - Residential',
+                                                           'Balanced - Business District',
+                                                           'Drain'
+                                                          ]})
+
+cluster_map.update_layout(
+    legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01),
+    margin={'l':5,'r':2,'t':5,'b':5}
+    )
+
+
+#### Storing components for later use ####
 
 gcomponents = {'week_line':week_line,
                 'week_heat':week_heat,
-                'animap':animap}
+                'animap':animap,
+                'cluster_map':cluster_map}
 
 
 #####################################
@@ -139,50 +173,97 @@ gcomponents = {'week_line':week_line,
 #####################################
 
 ### System
-system_layout = dbc.Container([
-    html.Div(
-        [
-            html.H2('System Stats'),
-            html.Hr(),
-            dbc.Col(
-                [
-                    html.H4('Daily Ridership'),
-                    html.Div(
-                        [
-                        dbc.Tabs(
+system_layout = html.Div([
+    html.H2("System Stats"),
+    html.Hr(),
+    dbc.Container([
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H4('Daily Ridership'),
+                        html.Div(
                             [
-                                dbc.Tab(label='Line',tab_id='week-line'),
-                                dbc.Tab(label='Heat',tab_id='week-heat')
-                            ],
-                            id="tabs",
-                            active_tab='week-line',
-                            ),
-                        html.Div(id="tab-content",className="p-4")
-                        ]
-                    )
-                ],
-                width=8
-            )
-            
-            
-            
-        ],
-        id='page-content'
-    ), 
-])
-
+                            dbc.Tabs(
+                                [
+                                    dbc.Tab(label='Line',tab_id='week-line'),
+                                    dbc.Tab(label='Heat',tab_id='week-heat')
+                                ],
+                                id="tabs",
+                                active_tab='week-line',
+                                ),
+                            html.Div(id="tab-content",className="p-4")
+                            ]
+                        )
+                    ],
+                    width=6
+                ),
+                
+                dbc.Col(
+                    [
+                        html.H4('System Seasonality over typical 2 weeks'),
+                        dcc.Graph(figure=animap)
+                    ],
+                    width=6
+                )
+                
+            ],
+        ), 
+    ]),
+], id='page-content')
 ### Station
-station_layout = dbc.Container([
+station_layout = html.Div(
+    [
+        html.H2('Station Stats'),
+        html.Hr(),
+        dbc.Container(
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.H4('Station Map'),
+                                dcc.Graph(figure=cluster_map,
+                                        id='station-map',
+                                        hoverData={'points':[{
+                                            "hovertext":'None',
+                                            "lat":"None",
+                                            "lon":"None",
+                                            "customdata":['None']}
+                                        ]}
+                                )
+                            ],
+                            width=6
+                        ),
+                        dbc.Col(
+                            [
+                                html.H4('Selected Station Info'),
+                                html.Div(id='station-content')
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+    ],
+    id='page-content'
+)
+
+
+
+dbc.Container([
+    
     html.Div(
         [
             html.H2('Station Stats'),
             html.Hr(),
             dbc.Col(
                 [
-                    html.H4('Station Fill June 17, 2018 - June 30, 2018'),
-                    dcc.Graph(figure=animap)
+                    html.H4('Station Map'),
+                    dcc.Graph(figure=cluster_map)
+                    
                 ],
-                width=12
+                width=6
             )
         ],
         id='page-content'

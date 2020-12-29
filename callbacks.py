@@ -4,6 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from layouts import gcomponents
 from app import app
+import json
 
 @app.callback(
     Output("tab-content", "children"),
@@ -22,3 +23,25 @@ def render_tab_content(active_tab):
             return dcc.Graph(figure=gcomponents['week_heat'])
     return "No tab selected"
 
+@app.callback(
+    Output("station-content","children"),
+    Input("station-map","hoverData")
+)
+def render_station_content(hover_data):
+    name = hover_data['points'][0]['hovertext']
+    station_id = hover_data['points'][0]['customdata'][0]
+    lat = hover_data['points'][0]['lat']
+    lon = hover_data['points'][0]['lon']
+
+    basic_stats = html.Div(
+        [
+            html.P([
+                'Station Name: ', name,
+                html.Br(),
+                'Station ID: ', station_id,
+                html.Br(),
+                'Coordinates: (', lat, ', ', lon,')'])
+        ]
+    )
+
+    return basic_stats
