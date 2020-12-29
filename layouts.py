@@ -34,6 +34,7 @@ NAVBAR_STYLE = {
 }
 
 CONTENT_STYLE = {
+    "top":5,
     "margin-left": "18rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
@@ -83,6 +84,7 @@ week_line = go.Figure()
 week_line.add_trace(go.Scatter(y=ww.weekdays,mode='lines',fill='tozeroy',name='Weekdays'))
 week_line.add_trace(go.Scatter(y=ww.weekends,mode='lines',fill='tozeroy',name='Weekends'))
 week_line.update_layout(
+                 height=300,
                  xaxis_title='Hour',
                  yaxis_title='Average Number of Rides',
                  legend={
@@ -97,16 +99,16 @@ week_line.update_layout(
 #### Weekly heatmap ####
 
 starts_by_weekday = starts.droplevel(level=-2)
-starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack()
+starts_by_weekday = starts_by_weekday.groupby([starts_by_weekday.index.hour,'day_of_week']).size().unstack().transpose()
 
 week_heat = px.imshow(starts_by_weekday,color_continuous_scale='hot')
 week_heat.update_layout(
-                 yaxis_title='Hour',
-                 yaxis={'tickmode':'linear',
+                 xaxis_title='Hour',
+                 xaxis={'tickmode':'linear',
                         'tick0':0,
                         'dtick':1},
-                 xaxis_title='Day',
-                 xaxis={'tickmode':'array',
+                 yaxis_title='Day',
+                 yaxis={'tickmode':'array',
                         'tickvals':list(range(7)),
                         'ticktext':['Mon','Tues','Wed','Thurs','Fri','Sat','Sun']},
                  coloraxis_colorbar={'title':"Total Rides"},
@@ -140,13 +142,13 @@ clusters.reset_index(inplace=True)
 
 cluster_map = px.scatter_mapbox(clusters, lat="_lat", lon="_long",
                         hover_name='station_name',hover_data=['station_id','_lat','_long'],
-                        color='KMeans_5_named', zoom=11,width=400,height=600, 
+                        color='KMeans_5_named', zoom=11,width=400,height=650, 
                         labels={'KMeans_5_named':'Clusters'}, 
-                        color_discrete_sequence=['navy','cornflowerblue','forestgreen','seagreen','firebrick'],
+                        color_discrete_sequence=['navy','cornflowerblue','darkorange','forestgreen','firebrick'],
                         category_orders={'KMeans_5_named':['Pool',
                                                            'Slight Pool',
                                                            'Balanced - Residential',
-                                                           'Balanced - Business',
+                                                           'Balanced - Business District',
                                                            'Drain'
                                                           ]})
 
@@ -194,7 +196,9 @@ system_layout = html.Div([
                                 ),
                             html.Div(id="tab-content",className="p-4")
                             ]
-                        )
+                        ),
+                        html.Img(src=app.get_asset_url('ride_duration_hist.png'), 
+                                style={'width':'50%','align':'center'})
                     ],
                     width=6
                 ),
@@ -216,8 +220,6 @@ system_layout = html.Div([
 ### Station
 station_layout = html.Div(
     [
-        html.H2('Station Stats'),
-        html.Hr(),
         dbc.Container(
             [
                 dbc.Row(
@@ -225,6 +227,7 @@ station_layout = html.Div(
                         dbc.Col(
                             [
                                 html.H4('Station Map'),
+                                html.Hr(),
                                 dcc.Graph(figure=cluster_map,
                                         id='station-map',
                                         clickData={'points':[{
@@ -239,18 +242,15 @@ station_layout = html.Div(
                         ),
                         dbc.Col(
                             [
-                                html.H4('Selected Station'),
-                                dbc.Row(id='station-content'),
+                                html.H4('Selected Station Info'),
                                 html.Hr(),
-                                html.Div(id='daily-graph')
+                                dbc.Row(id='forcast-graph'),
+                                html.Div(id='daily-graph'),
+                                dbc.Row(id='station-content')
                             ],
                         )
                     ]
                 ),
-
-                dbc.Row(
-                    [html.H4('Time Series')]
-                )
             ]
         )
     ],

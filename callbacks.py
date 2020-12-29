@@ -14,6 +14,7 @@ import plotly.express as px
 
 live = station_initalize()
 system_daily = load(open('./data/pickle/system_daily.pickle','rb'))
+system_forcast = load(open('./data/pickle/system_forcast.pickle','rb'))
 
 @app.callback(
     Output("tab-content", "children"),
@@ -35,17 +36,16 @@ def render_tab_content(active_tab):
     Output("station-content","children"),
     Input("station-map","clickData")
 )
-def basic_content(hover_data):
+def basic_content(click_data):
     """
     This call back generates individual station information from cursor hover
     over the station map
     """
-    name = hover_data['points'][0]['hovertext']
-    station_id = hover_data['points'][0]['customdata'][0]
-    lat = hover_data['points'][0]['lat']
-    lon = hover_data['points'][0]['lon']
+    name = click_data['points'][0]['hovertext']
+    station_id = click_data['points'][0]['customdata'][0]
+    lat = click_data['points'][0]['lat']
+    lon = click_data['points'][0]['lon']
     status = 'Active'
-    daily = px.line(system_daily['2018-06-17']['daily_'+station_id])
 
     try:
         capacity = live.loc[live.station_id == int(station_id)].capacity.values[0]
@@ -108,13 +108,13 @@ def basic_content(hover_data):
                 'Status: ', status,
                 html.Br(),
                 'Last Reported: ', updated,
-            ])
+            ],style={'font-size':'14px'})
         ], width=7
     )
 
     bike_stats = dbc.Col(
         [
-            html.H5('Bike Stats'),
+            html.H5('Live Bike Stats'),
             html.P([
                 'Capacity: ', capacity,
                 html.Br(),
@@ -132,7 +132,7 @@ def basic_content(hover_data):
                 'Bike Angel Action: ', action,
                 html.Br(),
                 'Bike Angel Points: ', points
-            ])
+            ],style={'font-size':'14px'})
         ], width= 5
     )
 
@@ -142,23 +142,60 @@ def basic_content(hover_data):
     Output("daily-graph","children"),
     Input("station-map","clickData")
 )
-def render_daily_graph(hover_data):
+def render_daily_graph(click_data):
     """
     Generates Daily Seasonality graph based on hover
     """
-    station_id = hover_data['points'][0]['customdata'][0]
+    station_id = click_data['points'][0]['customdata'][0]
     daily = px.line(system_daily['2018-06-17']['daily_'+station_id],
-                    width=500, height=300
+                    width=500, height=200
     )
 
     daily.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False,)
     daily.update_yaxes(range=[-20,20])
+    daily.update_xaxes(title='')
+    daily.update_yaxes(title='')
 
-    daily = dbc.Col(
+    daily_graph = dbc.Col(
         [
             html.H5('Daily Seasonality'),
             dcc.Graph(figure=daily)
         ]
     )
 
-    return daily
+    return daily_graph
+
+@app.callback(
+    Output("forcast-graph","children"),
+    Input("station-map","clickData")
+)
+def render_forcast(click_data):
+    station_id = click_data['points'][0]['customdata'][0]
+    forcast = px.line(system_forcast['2018-06-17':'2018-06-30']['yhat_'+station_id],
+                    height=200,width=500, labels={'yhat'+station_id:'Forcast'})
+    forcast.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False)
+    forcast.update_yaxes(title='Number of Bikes')
+    forcast.update_xaxes(title='')
+    try:
+        capacity = live.loc[live.station_id == int(station_id)].capacity.values[0]
+        forcast.add_shape(type='line',
+                        x0=0,
+                        x1=1,
+                        y0=capacity,
+                        y1=capacity,
+                        line={'color':'red'},
+                        xref='paper',
+                        yref='y')
+    except:
+        pass
+    
+    forcast_graph = dbc.Col(
+        [
+            html.H5('Time Series Model'),
+            dcc.Graph(figure=forcast)
+        ]
+    )
+
+    return forcast_graph
+
+
