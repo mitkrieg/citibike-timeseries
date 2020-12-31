@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output
 
 from app import app
 from app import server
-from layouts import system_layout, station_layout, nav_bar, CONTENT_STYLE
+from layouts import system_layout, station_layout, about_layout, nav_bar, CONTENT_STYLE
 import callbacks
 
 app.layout = html.Div([
@@ -17,7 +17,9 @@ app.layout = html.Div([
               Input('url', 'pathname'))
 def display_page(pathname):
     if pathname == '/':
-        return system_layout
+        return about_layout
+    elif pathname == '/about':
+        return about_layout
     elif pathname == '/system':
          return system_layout
     elif pathname == '/station':

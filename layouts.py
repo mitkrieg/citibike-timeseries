@@ -53,6 +53,7 @@ def nav_bar():
         html.Hr(),
         dbc.Nav(
             [
+                dbc.NavLink("About", href="/about",active="exact"),
                 dbc.NavLink("System", href="/system", active="exact"),
                 dbc.NavLink("Station", href="/station", active="exact"),
             ],
@@ -256,6 +257,20 @@ station_layout = html.Div(
                 ),
             ]
         )
+    ],
+    id='page-content'
+)
+
+
+about_layout = html.Div(
+    [
+        html.H2('About this project'),
+        dcc.Markdown('''
+        ## Methodolody
+
+Citibike and other similar bike-sharing systems face a unique challenge in balancing their system. Bikes must be distributed across all stations so that riders have access to both bikes to take out and empty docks to return bikes to. Unchecked, this challenge may cause bikes to pool in a certain station and drain from others. This project attempts to understand which stations in the Citibike system are pools, drains, or balanced. To do this, time series analysis was used to predict the number of bikes at a given station given the time and then based on their extracted seasonality from the time series model, stations were classified as pools, drains, or balanced using clustering.
+        
+        ''')
     ],
     id='page-content'
 )
