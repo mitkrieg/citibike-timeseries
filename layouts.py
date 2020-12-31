@@ -15,9 +15,9 @@ from pickle import load
 # Data
 #####################################
 
-starts = load(open('./data/pickle/starts.pickle','rb'))
-animation_data = load(open('./data/pickle/june17_slice.pickle','rb'))
-clusters = load(open('./data/pickle/clusters.pickle','rb'))
+starts = load(open('./data/starts.pickle','rb'))
+animation_data = load(open('./data/june17_slice.pickle','rb'))
+clusters = load(open('./data/clusters.pickle','rb'))
 
 #####################################
 # Styles & Colors
@@ -37,7 +37,6 @@ CONTENT_STYLE = {
     "top":0,
     "margin-left": "18rem",
     "margin-right": "2rem",
-    "padding": "1rem 0rem",
 }
 
 #####################################
@@ -144,7 +143,7 @@ cluster_map = px.scatter_mapbox(clusters, lat="_lat", lon="_long",
                         hover_name='station_name',hover_data=['station_id','_lat','_long'],
                         color='KMeans_5_named', zoom=11,width=400,height=650, 
                         labels={'KMeans_5_named':'Clusters'}, 
-                        color_discrete_sequence=['navy','cornflowerblue','darkorange','forestgreen','firebrick'],
+                        color_discrete_sequence=['red','darkred','yellowgreen','forestgreen','dodgerblue'],
                         category_orders={'KMeans_5_named':['Pool',
                                                            'Slight Pool',
                                                            'Balanced - Residential',
@@ -162,12 +161,16 @@ cluster_map.update_layout(
     )
 
 
-#### Storing components for later use ####
+#### Histogram of trip duration ####
+
+# duration = starts.tripduration/60
+
+# duration_hist = px.histogram(duration, x='tripduration',range_x=[0,90])
+
+#### Storing components for later use in callbacks####
 
 gcomponents = {'week_line':week_line,
-                'week_heat':week_heat,
-                'animap':animap,
-                'cluster_map':cluster_map}
+                'week_heat':week_heat,}
 
 
 #####################################
@@ -197,8 +200,8 @@ system_layout = html.Div([
                             html.Div(id="tab-content",className="p-4")
                             ]
                         ),
-                        html.Img(src=app.get_asset_url('ride_duration_hist.png'), 
-                                style={'width':'50%','align':'center'})
+                        html.H4("Frequency of Ride Duration"),
+                        #dcc.Graph(figure=duration_hist)
                     ],
                     width=6
                 ),
@@ -244,9 +247,9 @@ station_layout = html.Div(
                             [
                                 html.H4('Selected Station Info'),
                                 html.Hr(),
+                                dbc.Row(id='station-content'),
                                 dbc.Row(id='forcast-graph'),
                                 html.Div(id='daily-graph'),
-                                dbc.Row(id='station-content')
                             ],
                         )
                     ]

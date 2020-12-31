@@ -127,11 +127,11 @@ def basic_content(click_data):
                 'Disabled Docks: ', disabled_docks,
                 html.Br(),
                 'Percent Full: ', round(percent*100, 1), '%', 
-                html.Br(),
-                html.Br(),
-                'Bike Angel Action: ', action,
-                html.Br(),
-                'Bike Angel Points: ', points
+                # html.Br(),
+                # html.Br(),
+                # 'Bike Angel Action: ', action,
+                # html.Br(),
+                # 'Bike Angel Points: ', points
             ],style={'font-size':'14px'})
         ], width= 5
     )
@@ -152,9 +152,8 @@ def render_daily_graph(click_data):
     )
 
     daily.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False,)
-    daily.update_yaxes(range=[-20,20])
+    daily.update_yaxes(range=[-20,20],title='')
     daily.update_xaxes(title='')
-    daily.update_yaxes(title='')
 
     daily_graph = dbc.Col(
         [
@@ -175,7 +174,7 @@ def render_forcast(click_data):
                     height=200,width=500, labels={'yhat'+station_id:'Forcast'})
     forcast.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False)
     forcast.update_yaxes(title='Number of Bikes')
-    forcast.update_xaxes(title='')
+    forcast.update_xaxes(title='', dtick='d1',tickformat='%a')
     try:
         capacity = live.loc[live.station_id == int(station_id)].capacity.values[0]
         forcast.add_shape(type='line',
@@ -188,6 +187,15 @@ def render_forcast(click_data):
                         yref='y')
     except:
         pass
+
+    forcast.add_shape(type='line',
+                        x0=0,
+                        x1=1,
+                        y0=0,
+                        y1=0,
+                        line={'color':'lightblue'},
+                        xref='paper',
+                        yref='y')
     
     forcast_graph = dbc.Col(
         [
