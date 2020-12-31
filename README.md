@@ -10,7 +10,7 @@
 
 ## Overview
 
-Citibike and other similar bike-sharing systems face a unique challenge in balancing their system. Bikes must be distributed across all stations so that riders have access to both bikes to take out and empty docks to return bikes to. Unchecked, this challenge may cause bikes to pool in a certain station and drain from others. This project attempts to understand which stations in the Citibike system are pools, drains, or balanced. To do this, time series analysis was used to predict the number of bikes at a given station given the time and then based on their extracted daily seasonality from the time series model, classify stations as pools, drains, or balanced.
+Citibike and other similar bike-sharing systems face a unique challenge in balancing their system. Bikes must be distributed across all stations so that riders have access to both bikes to take out and empty docks to return bikes to. Unchecked, this challenge may cause bikes to pool in a certain station and drain from others. This project attempts to understand which stations in the Citibike system are pools, drains, or balanced. To do this, time series analysis was used to predict the number of bikes at a given station given the time and then based on their extracted seasonality from the time series model, stations were classified as pools, drains, or balanced using clustering.
 
 ## Business Understanding
 
@@ -127,7 +127,7 @@ Next steps are to:
 - Incorporate Exgoneous Variables such as holidays, weather, electric bikes and elevation
 - Collect data additional data and run analysis on 2020/2021 as Citibike has since 2018 expanded greatly into the Bronx, Washington Heights & Uppser Harlem, and deeper into Queens and brooklyn.
 - Analyze the impact of COVID-19 on changes rider behavior and station trends/clustering.
-- Refine clustering process to include "slight drains"
+- Refine clustering process to include "slight drains" and/or fewer misclassifications
  
 ## Repository Structure
 
@@ -147,7 +147,7 @@ Next steps are to:
 ├── 03_clustering.ipynb <- Narrative Jupyter Notebook containing cluster processes and analysis
 ├── app.py              <- Py script defining app variable for Dashboard made using plotly dash/flask
 ├── callbacks.py        <- Py script generating interactivity for Dashboard
-├── index.py            <- Py script manages pages of Dashboard
+├── index.py            <- Py script to run dashboard and manages pages of Dashboard
 ├── layouts.py          <- Py script creating html layouts of Dashboard
 ├── README.md           <- README for overview of this project
 ├── requirements.txt    <- requirements for replicating code
