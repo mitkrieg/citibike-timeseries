@@ -187,7 +187,6 @@ system_layout = html.Div([
             [
                 dbc.Col(
                     [
-                        html.H4('Daily Ridership'),
                         html.Div(
                             [
                             dbc.Tabs(
@@ -230,7 +229,7 @@ station_layout = html.Div(
                     [
                         dbc.Col(
                             [
-                                html.H4('Station Map'),
+                                html.H4('Station Map (2018)'),
                                 html.Hr(),
                                 dcc.Graph(figure=cluster_map,
                                         id='station-map',
@@ -262,15 +261,34 @@ station_layout = html.Div(
 )
 
 
-about_layout = html.Div(
+about_layout = dbc.Row(
     [
-        html.H2('About this project'),
-        dcc.Markdown('''
-        ## Methodolody
+        dbc.Col(
+            [
+                html.H2('About this project'),
+                html.P('Author: Mitchell Krieger'),
+                dcc.Markdown('''### The Rebalancing Problem
+                
+Citibike and other similar bike-sharing systems face a unique challenge in managing their system. Bikes must be distributed across all stations so that riders have access to both bikes to take out and empty docks to return bikes to. Unchecked, this challenge may cause bikes to pool in a certain station and drain from others. This project attempts to understand which stations in the Citibike system are pools, drains, or balanced. 
+                
+### Methodology
+                
+To figure out how to best rebalance the system, first time series analysis was used to predict the number of bikes at a given station at a given time, Then based on extracted seasonality from the time series model, stations were classified as pools, drains, or balanced using clustering. Only data from 2018 was used because newer data was either unavailable or inconsistent. This means that system balance may have changed since the addition of nearly 500 new stations throughout NYC since 2018 and changes in rider behavior due to COVID-19.
 
-Citibike and other similar bike-sharing systems face a unique challenge in balancing their system. Bikes must be distributed across all stations so that riders have access to both bikes to take out and empty docks to return bikes to. Unchecked, this challenge may cause bikes to pool in a certain station and drain from others. This project attempts to understand which stations in the Citibike system are pools, drains, or balanced. To do this, time series analysis was used to predict the number of bikes at a given station given the time and then based on their extracted seasonality from the time series model, stations were classified as pools, drains, or balanced using clustering.
-        
-        ''')
+### This Dashboard
+
+On the system page, you can see an overview of the 2018 system looking at typical weekly seasonality and legnth of trip duration. On the Station page, you can select a station from the map to see the time series model for each station, daily seasonality and current bike stats pulled from the live citibike data feed.
+                
+                ''')
+            ]
+        ),
+        dbc.Col(
+            [
+                html.Img(src=app.get_asset_url('urban-bike-nyc-preview.jpg'),style={'width':'100%','align':'center','verticalAlign':'middle'})
+            ],
+            style={'verticalAlign':'middle'}
+        )
+
     ],
     id='page-content'
 )

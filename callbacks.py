@@ -12,6 +12,7 @@ from numpy import nan
 from pickle import load
 import plotly.express as px
 
+### Load in data accessed by callbacks
 live = station_initalize()
 system_daily = load(open('./data/pickle/system_daily.pickle','rb'))
 system_forcast = load(open('./data/pickle/system_forcast.pickle','rb'))
@@ -38,14 +39,17 @@ def render_tab_content(active_tab):
 )
 def basic_content(click_data):
     """
-    This call back generates individual station information from cursor hover
-    over the station map
+    This call back generates live individual station information from cursor click
+    on the station cluster map
     """
+    print(click_data)
     name = click_data['points'][0]['hovertext']
     station_id = click_data['points'][0]['customdata'][0]
     lat = click_data['points'][0]['lat']
     lon = click_data['points'][0]['lon']
     status = 'Active'
+
+    # try live station data, if doesn't exist, pass no longer in use
 
     try:
         capacity = live.loc[live.station_id == int(station_id)].capacity.values[0]
@@ -94,6 +98,7 @@ def basic_content(click_data):
     except:
         updated = 'December 2018'
 
+    #### Component layouts
     basic_stats = dbc.Col(
         [
             html.H5('Basic Information'),
@@ -142,18 +147,21 @@ def basic_content(click_data):
     Output("daily-graph","children"),
     Input("station-map","clickData")
 )
-def render_daily_graph(click_data):
+def render_graphs(click_data):
     """
-    Generates Daily Seasonality graph based on hover
+    Generates Daily Seasonality graph and time series graph based on clicked station
     """
     station_id = click_data['points'][0]['customdata'][0]
+
+    #### Daily Seasonality graph
+
     daily = px.line(system_daily['2018-06-17']['daily_'+station_id],
                     width=500, height=200
     )
 
     daily.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False,)
     daily.update_yaxes(range=[-20,20],title='')
-    daily.update_xaxes(title='')
+    daily.update_xaxes(title='', tickformat='%I:%M')
 
     daily_graph = dbc.Col(
         [
@@ -162,14 +170,6 @@ def render_daily_graph(click_data):
         ]
     )
 
-    return daily_graph
-
-@app.callback(
-    Output("forcast-graph","children"),
-    Input("station-map","clickData")
-)
-def render_forcast(click_data):
-    station_id = click_data['points'][0]['customdata'][0]
     forcast = px.line(system_forcast['2018-06-17':'2018-06-30']['yhat_'+station_id],
                     height=200,width=500, labels={'yhat'+station_id:'Forcast'})
     forcast.update_layout(margin=dict(l=5,r=5,t=5,b=5),showlegend=False)
@@ -187,6 +187,9 @@ def render_forcast(click_data):
                         yref='y')
     except:
         pass
+    
+
+    ### Forcast Time Series Graph 
 
     forcast.add_shape(type='line',
                         x0=0,
@@ -204,6 +207,6 @@ def render_forcast(click_data):
         ]
     )
 
-    return forcast_graph
+    return forcast_graph, daily_graph
 
 
