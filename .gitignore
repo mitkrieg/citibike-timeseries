@@ -9,3 +9,4 @@ testing.ipynb
 data/station_data
 data/trip_data
 data/pickle
+src/__pycache__
