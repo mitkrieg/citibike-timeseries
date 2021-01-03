@@ -53,6 +53,9 @@ def series_to_supervised(data, n_in=1, n_out=1):
 def measure_rmse(actual, predicted):
 	return sqrt(mean_squared_error(actual, predicted))
 
+def measure_mae(actual,predicted):
+	return mean_absolute_error(actual,predicted)
+
 # fit a model
 def model_fit(train, config):
 	# unpack config
@@ -104,21 +107,24 @@ def walk_forward_validation(train,test, n_test, cfg):
 		# add actual observation to history for the next loop
 		history.append(test[i])
 	# estimate prediction error
-	error = measure_rmse(test, predictions)
-	print(' > %.3f' % error)
-	return error
+	rmse = measure_rmse(test, predictions)
+	mae = measure_mae(test,predictions)
+	print(f'> RMSE: {round(rmse,3)} \t MAE: {round(mae,3)}')
+	return (rmse, mae)
 
 # repeat evaluation of a config
 def repeat_evaluate(train, test, config, n_test, n_repeats=30):
 	# fit and evaluate the model n times
 	scores = [walk_forward_validation(train, test, n_test, config) for _ in range(n_repeats)]
-	return scores
+	return array(scores)
 
 # summarize model performance
 def summarize_scores(name, scores):
 	# print a summary
-	scores_m, score_std = mean(scores), std(scores)
-	print('%s: %.3f RMSE (+/- %.3f)' % (name, scores_m, score_std))
+	mean_rmse, std_rmse = mean(scores[:,0]), std(scores[:,0])
+	mean_mae, std_mae = mean(scores[:,1]), std(scores[:,1])
+	print('%s: %.3f RMSE (+/- %.3f)' % (name, mean_rmse, std_rmse))
+	print('%s: %.3f MAE (+/- %.3f)' % (name, mean_mae, std_mae))
 	# box and whisker plot
 	pyplot.boxplot(scores)
 	pyplot.show()
