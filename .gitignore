@@ -10,3 +10,4 @@ data/station_data
 data/trip_data
 data/pickle
 src/__pycache__
+*.cpython-36.pyc
