@@ -85,15 +85,18 @@ Out of many forecasts run via grid search and cross validation on SARIMA, Facebo
 | ARIMA (Baseline) | p=0, d=0,q=0,                                                          | 8.97  | 8.05 | 2348.227 | None                            |
 | SARIMA           | (p=1,d=0,q=1) x (p=0,d=2,q=2,s=24)                                     | 9.71  | 7.77 | 1281.794 | Daily                           |
 | Facebook Prophet | daily = 3 Fourier terms, scale: 10 weekly = 4 Fourier terms, scale: 10 | 6.30  | 5.15 | N/A      | Daily, Weekly, (yearly in some) |
-| RNN/LSTM         | layers=3, dropout=.4, batch_size=16, hidden_size = 25, epochs = 400    | 11.65 | 9.19 | N/A      | Daily, (Weekly incorrectly)     |
+| LSTM         | layers=3, dropout=0.4, batch_size=24, hidden_size = 25, epochs = 30    | 10.44 | 8.80 | N/A      | Daily, (Weekly incorrectly)     |
+| CNN-LSTM         | Layers = 2 Convolutional, 1 maxpooling, 1 LSTM, 1 Dense; batch_size=16; epochs = 50    | 4.88 | 3.63 | N/A      | Closely monitored number of bikes but not seasonality   |
 
-The Facebook Prophet model demonstrated the closest seasonality to the actual numbers and had the best performance metrics by far. We can also see that when plotting the confidence intervals, most data points fall within the confidence interval even when the predicted value does not quite capture what is happing in reality:
+Even though CNN-LSTM had the best metrics overall, it didn't capture seasonality well, too closely mirroring the actual values of the station. The Facebook Prophet model on the other hand, demonstrated the best seasonality detection to the actual numbers. We can also see that when plotting the confidence intervals, most data points fall within the confidence interval even when the predicted value does not quite capture what is happing in reality:
 
 ![fbprophetmodel](images/fbprophet_model.png)
 
 The Facebook prophet model also has the ability to easily handle the entire year and malfunctioning stations (thus missing data), therefore it will be a convenient model to choose to cluster on. This particular model also demonstrates the seasonality of the system well when decomposed. As this sample station is a residential neighborhood, we see more bikes at the station in the evening and fewer bikes during the day. We can also see from the same Tuesday/Wednesday/Thursday spike in the weekly seasonality as we did in our EDA:
 
 ![seasonality](images/seasonality.png)
+
+Because Facebook prophet captures the behavior of stations in a more generalizable way, the predicted values and seasonalities from that model were used to cluster stations.
 
 ### Clustering
 
@@ -110,7 +113,7 @@ Unbalanced stations take on an upward or downward trend or are not centered arou
 
 Using KMeans clustering we can classify like stations and then identify the cluster's quality. Despite an elbow at 7 clusters on plots of the Calinski Harabasz and Silhouette scores, a K of 5 was chosen because of the ability to decipher what each cluster represented:
 
-![clusters](images/poolsdrains_clusters.png)
+![clusters](images/cluster_map.png)
 
 Areas with pools and drains are evident from the above clustering. Bikes pool in mostly Brooklyn perhaps because less people are using them for commuting due to its distance from Manhattan and east river making communiting harder if you don't have access to a bridge. Bikes drain from Upper East Side/East Harlem and the outer edges of the system such as Long Island City and deeper into Brooklyn. Midtown also has a decent amount of drains, although this may be because of the lack of a "slight drain" category (increasing to 6 clusters did not reveal such a trend). These clusters also reflect the pools and drains identified visually in the animated map above.
 
