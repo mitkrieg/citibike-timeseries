@@ -84,7 +84,7 @@ week_line = go.Figure()
 week_line.add_trace(go.Scatter(y=ww.weekdays,mode='lines',fill='tozeroy',name='Weekdays'))
 week_line.add_trace(go.Scatter(y=ww.weekends,mode='lines',fill='tozeroy',name='Weekends'))
 week_line.update_layout(
-                 height=300,
+                 height=250,
                  xaxis_title='Hour',
                  yaxis_title='Average Number of Rides',
                  legend={
@@ -131,7 +131,7 @@ animap = px.scatter_mapbox(animation_data, lat="_lat", lon="_long",
                         animation_frame='dt', animation_group='id',
                         color="percent_full", size="avail_bikes",
                         color_continuous_scale=px.colors.cyclical.IceFire, size_max=15,
-                        zoom=10,width=600,height=600)
+                        zoom=10,width=600,height=650)
 
 animap.update_layout(margin={'l':5,'r':2,'t':5,'b':5})
 
@@ -164,11 +164,31 @@ cluster_map.update_layout(
 
 #### Histogram of trip duration ####
 
-# duration = starts.tripduration/60
+duration = starts.tripduration/60
 
-# duration_hist = px.histogram(duration, x='tripduration',range_x=[0,90])
+duration_hist = px.histogram(duration, x='tripduration',range_x=[0,90], height=250)
 
-#### Storing components for later use in callbacks####
+duration_hist.update_layout(margin={'l':5,'r':2,'t':5,'b':5})
+
+duration_hist.add_shape(type='line',
+                        x0=30,
+                        x1=30,
+                        y0=0,
+                        y1=1,
+                        line={'color':'lightblue','dash':'dash'},
+                        xref='x',
+                        yref='paper')
+
+duration_hist.add_shape(type='line',
+                        x0=45,
+                        x1=45,
+                        y0=0,
+                        y1=1,
+                        line={'color':'red','dash':'dash'},
+                        xref='x',
+                        yref='paper')
+
+#### Storing components for later use in callbacks.py####
 
 gcomponents = {'week_line':week_line,
                 'week_heat':week_heat,}
@@ -189,6 +209,7 @@ system_layout = html.Div([
                     [
                         html.Div(
                             [
+                            html.H4('Weekly Traffic Analysis'),
                             dbc.Tabs(
                                 [
                                     dbc.Tab(label='Line',tab_id='week-line'),
@@ -201,7 +222,7 @@ system_layout = html.Div([
                             ]
                         ),
                         html.H4("Frequency of Ride Duration"),
-                        #dcc.Graph(figure=duration_hist)
+                        dcc.Graph(figure=duration_hist)
                     ],
                     width=6
                 ),

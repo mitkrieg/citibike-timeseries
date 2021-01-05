@@ -42,7 +42,6 @@ def basic_content(click_data):
     This call back generates live individual station information from cursor click
     on the station cluster map
     """
-    print(click_data)
     name = click_data['points'][0]['hovertext']
     station_id = click_data['points'][0]['customdata'][0]
     lat = click_data['points'][0]['lat']
