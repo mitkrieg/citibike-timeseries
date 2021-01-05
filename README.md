@@ -130,6 +130,7 @@ Since 2018, the number of stations active in the system have nearly doubled, exp
 Next steps are to:
 
 - Incorporate Exgoneous Variables such as holidays, weather, electric bikes and elevation
+- Investigate Bike Angel points, and other re-balancing efforts effect the time series model
 - Collect data additional data and run analysis on 2020/2021 as Citibike has since 2018 expanded greatly into the Bronx, Washington Heights & Uppser Harlem, and deeper into Queens and brooklyn.
 - Analyze the impact of COVID-19 on changes rider behavior and station trends/clustering.
 - Refine clustering process to include "slight drains" and/or fewer misclassifications
