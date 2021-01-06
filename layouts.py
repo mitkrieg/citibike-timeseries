@@ -288,24 +288,25 @@ about_layout = dbc.Row(
             [
                 html.H2('About this project'),
                 html.P('Author: Mitchell Krieger'),
+                dcc.Markdown('Contact: mitkrieger@gmail.com | [Project GitHub](https://github.com/mitkrieg/citibike-timeseries)'),
                 dcc.Markdown('''### The Rebalancing Problem
                 
 Citibike and other similar bike-sharing systems face a unique challenge in managing their system. Bikes must be distributed across all stations so that riders have access to both bikes to take out and empty docks to return bikes to. Unchecked, this challenge may cause bikes to pool in a certain station and drain from others. This project attempts to understand which stations in the Citibike system are pools, drains, or balanced. 
                 
 ### Methodology
                 
-To figure out how to best rebalance the system, first time series analysis was used to predict the number of bikes at a given station at a given time, Then based on extracted seasonality from the time series model, stations were classified as pools, drains, or balanced using clustering. Only data from 2018 was used because newer data was either unavailable or inconsistent. This means that system balance may have changed since the addition of nearly 500 new stations throughout NYC since 2018 and changes in rider behavior due to COVID-19.
-
-### This Dashboard
-
-On the system page, you can see an overview of the 2018 system looking at typical weekly seasonality and legnth of trip duration. On the Station page, you can select a station from the map to see the time series model for each station, daily seasonality and current bike stats pulled from the live citibike data feed.
-                
+To figure out how to best rebalance the system, first time series analysis was used to predict the number of bikes at a given station at a given time, Then based on extracted seasonality from the time series model, stations were classified as pools, drains, or balanced using clustering. Only data from 2018 was used because newer data was either unavailable or inconsistent. This means that system balance may have changed since the addition of nearly 500 new stations throughout NYC since 2018 and changes in rider behavior due to COVID-19.            
                 ''')
             ]
         ),
         dbc.Col(
             [
-                html.Img(src=app.get_asset_url('urban-bike-nyc-preview.jpg'),style={'width':'100%','align':'center','verticalAlign':'middle'})
+                html.Img(src=app.get_asset_url('urban-bike-nyc-preview.jpg'),style={'width':'100%','align':'center','verticalAlign':'middle'}),
+                html.Hr(),
+                dcc.Markdown("""### This Dashboard
+
+On the system page, you can see an overview of the 2018 system looking at typical weekly seasonality and legnth of trip duration. On the Station page, you can select a station from the map to see the time series model for each station, daily seasonality and current bike stats pulled from the live citibike data feed.
+""")
             ],
             style={'verticalAlign':'middle'}
         )
