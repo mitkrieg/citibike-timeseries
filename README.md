@@ -134,6 +134,7 @@ The `app.py`, `index.py`, `layouts.py`, and `callbacks.py` in this repository cr
 Next steps are to:
 
 - Incorporate Exgoneous Variables such as holidays, weather, electric bikes and elevation
+- Create model that incorporates interactions between stations such as VARMAX
 - Investigate Bike Angel points, and other re-balancing efforts effect the time series model
 - Collect data additional data and run analysis on 2020/2021 as Citibike has since 2018 expanded greatly into the Bronx, Washington Heights & Uppser Harlem, and deeper into Queens and brooklyn.
 - Analyze the impact of COVID-19 on changes rider behavior and station trends/clustering.
