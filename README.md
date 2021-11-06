@@ -100,7 +100,7 @@ Because Facebook prophet captures the behavior of stations in a more generalizab
 
 ### Clustering
 
-Balanced stations should begin and end in the same place, and centered around zero. If the endpoints are non-zero the remainder of the day should balance out the ends. For example, a U-like shape is often found in residential neighborhoods. This shape is balanced because it returns to where it started and is centered around zero. Similarly, an inverted U often found in business areas, are also balanced. The station below on right is on the upper west side (a residential area) and is balanced due to the U shape centered around zero. The station on the left is in the financial district and while it has an inverted U shape, it is not centered around zero. This may indicate a possible tendency to pool:
+Balanced stations should begin and end in the same place, and centered around zero. If the endpoints are non-zero the remainder of the day should balance out the ends. For example, a U-like shape is often found in residential neighborhoods. This shape is balanced because it returns to where it started and is centered around zero. Similarly, an inverted U often found in business areas, are also balanced. The station below on left is on the upper west side (a residential area) and is balanced due to the U shape centered around zero. The station on the right is in the financial district and while it has an inverted U shape, it is not centered around zero. This may indicate a possible tendency to pool:
 
 <p float="center">
   <img src="images/columbus.png" width=250 />
